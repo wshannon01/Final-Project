@@ -2,3 +2,19 @@ Baltimore (Hopkins) Crime Patterns
 
 Data set: Balimore Police Department Crime Data or Hopkins Secruity Alert Emails
 
+Advanced Data Science I: Final Project Proposal
+Johns Hopkins Security Alert: Crime Analysis and Visualization
+
+Using data from the Johns Hopkins Corporate Security Alerts:
+Develop a street safety score and interactive spatial visualization of the street safety score. 
+Determine the locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.), and whether these patterns vary by month or season.
+You must be obtaining your own raw data
+Data will be obtained by scraping emails sent from Corporate_Security@jhmi.edu with the subject “SECURITY ALERT” through the following steps:
+Establish forwarding rule to forward all past “SECURITY ALERT” emails from Corporate_Security@jhmi.edu to the email address provided by https://parser.zapier.com/ to extract the data.
+Create template to extract CAMPUS, INCIDENT TYPE, LOCATION, DATE, TIME, SUSPECT INFORMATION, and NARRATIVE text from emails.
+You must be doing your own data processing
+Raw data will be loaded and cleaned in R. Data analysis will be completed with R and the interactive visualization will be built with Shinny.
+The data must be available to be made public by end of class
+The dataset will be posted on my GitHub final project repository.
+You must specify your own questions you are asking from the data. You need to provide reasonable justification you can answer that question with your data.
+By scraping the Security Alert emails from Corporate_Security@jhmi.edu, I will have crime alert data with information about the campus, incident type, location, date, time, suspect information, and narrative. Using this data, I will be able to calculate street safety scores based upon the rate of crimes and types of crimes. Additionally, I will analyze the data in aggregate to determine locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.). I will also analyze the data by month and season to determine if there are temporal variations in crime patterns.
