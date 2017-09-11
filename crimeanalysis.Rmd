@@ -1,0 +1,34 @@
+---
+title: "crime_analysis"
+author: "Shannon Wongvibulsin"
+date: "September 11, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction: Johns Hopkins Security Alert - Crime Analysis & Visualization
+Using data from the Johns Hopkins Corporate Security Alerts:
+1. Develop a street safety score and interactive spatial visualization of the street safety score. 
+2. Determine the locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.), and whether these patterns vary by month or season.
+
+By scraping the Security Alert emails from Corporate_Security@jhmi.edu, I will have crime alert data with information about the campus, incident type, location, date, time, suspect information, and narrative. Using this data, I will be able to calculate street safety scores based upon the rate of crimes and types of crimes. Additionally, I will analyze the data in aggregate to determine locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.). I will also analyze the data by month and season to determine if there are temporal variations in crime patterns.
+
+## Inport Data
+Data aquisition plan: Data will be obtained by scraping emails sent from Corporate_Security@jhmi.edu with the subject “SECURITY ALERT” through the following steps:
+1. Establish forwarding rule to forward all past “SECURITY ALERT” emails from Corporate_Security@jhmi.edu to the email address provided by https://parser.zapier.com/ to extract the data.
+2. Create template to extract CAMPUS, INCIDENT TYPE, LOCATION, DATE, TIME, SUSPECT INFORMATION, and NARRATIVE text from emails.
+
+```{r data}
+
+```
+
+## Data Analysis
+
+```{r}
+
+```
+
+
