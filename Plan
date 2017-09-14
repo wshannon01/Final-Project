@@ -18,3 +18,24 @@ The data must be available to be made public by end of class
 The dataset will be posted on my GitHub final project repository.
 You must specify your own questions you are asking from the data. You need to provide reasonable justification you can answer that question with your data.
 By scraping the Security Alert emails from Corporate_Security@jhmi.edu, I will have crime alert data with information about the campus, incident type, location, date, time, suspect information, and narrative. Using this data, I will be able to calculate street safety scores based upon the rate of crimes and types of crimes. Additionally, I will analyze the data in aggregate to determine locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.). I will also analyze the data by month and season to determine if there are temporal variations in crime patterns.
+
+Data Source:
+http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/2017.60%20day%20Crime%20Log.pdf
+Security alert emails
+
+Data Variables:
+Crime Type: Theft, Assault, Trespassing, Destruction of Property, Robbery, Weapons Violation
+Date/Time Reported
+Date/Time Occurred 
+General Location
+
+References: 
+http://streetscore.media.mit.edu/about.html
+http://streetscore.media.mit.edu/
+https://www.citylab.com/design/2016/04/the-value-of-a-citys-streetscore/479385/
+https://spotcrime.com/md/baltimore
+https://oag.ca.gov/sites/all/files/agweb/pdfs/cjsc/prof10/formulas.pdf
+
+Exploratory Data Analysis Plan:
+Histogram of crime types, general location
+Histogram of crime by time of year
