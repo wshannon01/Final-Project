@@ -24,10 +24,12 @@ http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/2017.6
 Security alert emails
 
 Data Variables:
-Crime Type: Theft, Assault, Trespassing, Destruction of Property, Robbery, Weapons Violation
+Crime Type: Theft, Assault, Trespassing, Destruction of Property, Robbery, Weapons Violation 
+(classification definitions: http://security.jhu.edu/_template-assets/documents/Crime_Statistic_Report_Form_.pdf)
 Date/Time Reported
 Date/Time Occurred 
 General Location
+Disposition (crime log disposition definitions: http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/CrimeLogDispositionList_122915.pdf)
 
 References: 
 http://streetscore.media.mit.edu/about.html
