@@ -21,6 +21,7 @@ By scraping the Security Alert emails from Corporate_Security@jhmi.edu, I will h
 
 Data Source:
 http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/2017.60%20day%20Crime%20Log.pdf
+- extract data using tabulizer (https://ropensci.org/tutorials/tabulizer_tutorial.html, https://www.r-bloggers.com/extracting-tables-from-pdfs-in-r-using-the-tabulizer-package/)
 Security alert emails
 
 Data Variables:
