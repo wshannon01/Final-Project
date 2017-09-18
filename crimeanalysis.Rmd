@@ -9,12 +9,28 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction: Johns Hopkins Security Alert - Crime Analysis & Visualization
+# Johns Hopkins Security Alert - Crime Analysis & Visualization
+
+## Introduction
+
+Baltimore City consistently ranks as one of the most dangerous cities in America. [Add additional statistics about crime rate, etc.] As a result, discussion about safety concerns at Johns Hopkins is common. To promote a safe and secure environment, the Hopkins Corporate Security provides the University and Hospital communities proactive security and law enforcement practices. Corporate Security maintains a record of the campus crime and provides annual crime statistics. 
+
+The Hopkins Corporate Security crime log represents a rich source of crime data that can be analyzed for crime patterns to determine whether certain types of crime occur more frequently at certain locations, times of day, days of the week, or times of the year. Furthermore, understanding these patterns can help with crime projections to increase campus safety. For example, increased security personnel can be strategically positioned based upon crime patterns. Additionally, although Corporate Security notifies Hopkins of reported crimes that present a “serious or continuing threat” through “Security Alert” emails, detailed analysis of crime patterns can allow Corporate Security to inform the community about general crime “forecasts” as well as general safety precaution recommendations.
+
+## Methods
+
 Using data from the Johns Hopkins Corporate Security Alerts:
 1. Develop a street safety score and interactive spatial visualization of the street safety score. 
 2. Determine the locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.), and whether these patterns vary by month or season.
 
 By scraping the Security Alert emails from Corporate_Security@jhmi.edu, I will have crime alert data with information about the campus, incident type, location, date, time, suspect information, and narrative. Using this data, I will be able to calculate street safety scores based upon the rate of crimes and types of crimes. Additionally, I will analyze the data in aggregate to determine locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.). I will also analyze the data by month and season to determine if there are temporal variations in crime patterns.
+
+references:
+http://wtop.com/local/2016/02/d-c-baltimore-city-among-most-dangerous-places-in-u-s/
+https://www.forbes.com/pictures/mlj45jggj/7-baltimore/#68a81b8b5487
+http://baltimore.cbslocal.com/2017/06/16/baltimore-ranks-on-new-list-of-worst-american-cities-to-live-in/ 
+http://www.hopkinsmedicine.org/security_parking_transportation/security/
+http://security.jhu.edu/_template-assets/documents/annual_report.pdf
 
 ## Inport Data
 Data aquisition plan: Data will be obtained by scraping emails sent from Corporate_Security@jhmi.edu with the subject “SECURITY ALERT” through the following steps:
@@ -22,6 +38,11 @@ Data aquisition plan: Data will be obtained by scraping emails sent from Corpora
 2. Create template to extract CAMPUS, INCIDENT TYPE, LOCATION, DATE, TIME, SUSPECT INFORMATION, and NARRATIVE text from emails.
 
 ```{r data}
+
+library(tabulizer)
+library(dplyr)
+location <- 'http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/2017.60%20day%20Crime%20Log.pdf'
+out <- extract_tables(location)
 
 ```
 
