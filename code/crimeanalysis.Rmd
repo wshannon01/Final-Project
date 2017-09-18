@@ -38,18 +38,30 @@ Data aquisition plan: Data will be obtained by scraping emails sent from Corpora
 2. Create template to extract CAMPUS, INCIDENT TYPE, LOCATION, DATE, TIME, SUSPECT INFORMATION, and NARRATIVE text from emails.
 
 ```{r data}
+setwd("/Users/purplesw/Dropbox/final_project/data")
+dat.15 <- read.csv("2015crimelog.csv")
+dat.16 <- read.csv("2016crimelog.csv")
+dat.17 <- read.csv("2017crimelog.csv")
+```
+
+## Testing tabulizer package
+
+```{r}
 
 library(tabulizer)
 library(dplyr)
 location <- 'http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/2017.60%20day%20Crime%20Log.pdf'
+destfile = "mypdf.pdf"
+dl = download.file(location, destfile)
+out <- extract_tables(destfile)
+
+library(tabulizer)
+library(dplyr)
+# Location of WARN notice pdf file
+location <- 'http://www.edd.ca.gov/jobs_and_training/warn/WARN-Report-for-7-1-2016-to-10-25-2016.pdf'
+
+# Extract the table
 out <- extract_tables(location)
-
-```
-
-## Data Analysis
-
-```{r}
-
 ```
 
 
