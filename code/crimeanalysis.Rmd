@@ -43,6 +43,34 @@ dat.15 <- read.csv("2015crimelog.csv")
 dat.16 <- read.csv("2016crimelog.csv")
 dat.17 <- read.csv("2017crimelog.csv")
 ```
+## Create plots
+```{r}
+
+t15 <- table(dat.15$Crime)
+d15 <- as.data.frame(t15)
+d15$Yr <- "15"
+  
+t16 <- table(dat.16$Crime)
+d16 <- as.data.frame(t16)
+d16$Yr <- "16"
+
+t17 <- table(dat.17$Crime)
+d17 <- as.data.frame(t17)
+d17$Yr <- "17"
+
+total <- rbind(d15, d16)
+total <- rbind(total, d17)
+
+
+library(ggplot2)
+library(plotly)
+
+p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Yr)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+pp <- ggplotly(p) 
+```
+
+
 
 ## Testing tabulizer package
 
