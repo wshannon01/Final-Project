@@ -68,6 +68,61 @@ library(plotly)
 p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Yr)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 pp <- ggplotly(p) 
+
+pp
+
+
+```
+
+## Dates
+consider season, month, day of week, time
+
+```{r}
+library(lubridate)
+library(dplyr)
+library(reshape2)
+
+#dat.15$day <- weekdays(as.Date(dat.15$Date.Time.Reported))
+#dat.15$month <- months(as.Date(dat.15$Date.Time.Reported))
+#dat.15$quarter <- quarters(as.Date(dat.15$Date.Time.Reported))
+
+dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.15$day <- weekdays(dat.15$date)
+dat.15$month <- months(dat.15$date)
+dat.15$quarter <- quarters(dat.15$date)
+
+dat.15 <- dat.15[-288,]
+
+dw15 <- as.data.frame(table(dat.15$Crime, dat.15$day))
+
+dwm15 <- melt(dw15, c("Var1", "Var2"))
+
+pd <- ggplot(data = dwm15, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ppd <- ggplotly(pd) 
+
+ppd
+
+dw15m <- as.data.frame(table(dat.15$Crime, dat.15$month))
+
+dwm15m <- melt(dw15m, c("Var1", "Var2"))
+
+pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ppm <- ggplotly(pm) 
+
+ppm
+
+dw15q <- as.data.frame(table(dat.15$Crime, dat.15$quarter))
+
+dwm15q <- melt(dw15q, c("Var1", "Var2"))
+
+pq <- ggplot(data = dwm15q, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ppq <- ggplotly(pq) 
+
+ppq
+
 ```
 
 
