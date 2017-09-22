@@ -123,8 +123,36 @@ ppq <- ggplotly(pq)
 
 ppq
 
+# seasons
+
+newdat.15$num.month <- match(newdat.15$month, month.name)
+
+newdat.15 <-
+newdat.15 %>%
+  mutate(Season = ifelse(num.month >= 3 & num.month <= 5, "Spring", 
+                          ifelse(num.month >= 6 & num.month <= 8, "Summer",
+                            ifelse(num.month >= 9 & num.month <= 11, "Autumn", "Winter"))))
+
+dw15s <- as.data.frame(table(newdat.15$Crime, newdat.15$Season))
+
+dwm15s <- melt(dw15s, c("Var1", "Var2"))
+
+ps <- ggplot(data = dwm15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+pps <- ggplotly(ps) 
+
+pps
+
 ```
 
+## Location
+Need to do text processing of general locations (buildings, areas)
+155 unique locations 
+look at groupings of general areas
+look at correlations of crime types, time and areas
+```{r}
+
+```
 
 
 ## Testing tabulizer package
