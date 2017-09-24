@@ -156,6 +156,11 @@ look at correlations of crime types, time and areas
 
 ```
 
+## To Do
+- parse time of day from "Date.Time.Occurred"
+- rearrange labels for plots
+- add title and axis lables to plots
+
 
 ## Testing tabulizer package
 
