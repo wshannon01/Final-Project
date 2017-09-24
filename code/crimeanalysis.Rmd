@@ -33,6 +33,8 @@ http://www.hopkinsmedicine.org/security_parking_transportation/security/
 http://security.jhu.edu/_template-assets/documents/annual_report.pdf
 
 ## Inport Data
+Data from Johns Hopkins Corporate Security
+
 Data aquisition plan: Data will be obtained by scraping emails sent from Corporate_Security@jhmi.edu with the subject “SECURITY ALERT” through the following steps:
 1. Establish forwarding rule to forward all past “SECURITY ALERT” emails from Corporate_Security@jhmi.edu to the email address provided by https://parser.zapier.com/ to extract the data.
 2. Create template to extract CAMPUS, INCIDENT TYPE, LOCATION, DATE, TIME, SUSPECT INFORMATION, and NARRATIVE text from emails.

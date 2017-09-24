@@ -47,3 +47,10 @@ http://security.jhu.edu/compliance-and-crime-statistics/index.html#security
 Exploratory Data Analysis Plan:
 Histogram of crime types, general location
 Histogram of crime by time of year
+
+Step-by-Step Analysis Plan:
+- Import data from PDF table to R
+- Data cleaning
+- Exploratory data analysis (plot histograms of crime types by year, day of week, time of day, month, season, location)
+- Shiny App for visualizing crime trends
+- Geocode locations, develop crime map visualization
