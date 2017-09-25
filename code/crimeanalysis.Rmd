@@ -153,6 +153,7 @@ Need to do text processing of general locations (buildings, areas)
 look at groupings of general areas
 look at correlations of crime types, time and areas
 ```{r}
+table(dat.15$General.Location)
 
 ```
 
