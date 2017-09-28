@@ -1,6 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;}
-{\colortbl;\red255\green255\blue255;\red74\green74\blue74;\red255\green255\blue255;}
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red74\green74\blue74;}
 \margl1440\margr1440\vieww14760\viewh13460\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
@@ -17,13 +18,40 @@ https://oag.ca.gov/sites/all/files/agweb/pdfs/cjsc/prof10/formulas.pdf\
 http://www.hopkinsmedicine.org/security_parking_transportation/_downloads/2016graph.pdf\
 http://security.jhu.edu/compliance-and-crime-statistics/index.html#security\
 \
+weather data\
+{\field{\*\fldinst{HYPERLINK "https://recology.info/2015/07/weather-data-with-rnoaa/"}}{\fldrslt https://recology.info/2015/07/weather-data-with-rnoaa/}}\
+\
+weather and crime\
+{\field{\*\fldinst{HYPERLINK "https://github.com/ChicagoHarris/Weather-and-Crime"}}{\fldrslt https://github.com/ChicagoHarris/Weather-and-Crime}}\
+{\field{\*\fldinst{HYPERLINK "http://crime.static-eric.com/"}}{\fldrslt http://crime.static-eric.com/}}\
+{\field{\*\fldinst{HYPERLINK "http://www.nytimes.com/2013/09/01/opinion/sunday/weather-and-violence.html"}}{\fldrslt http://www.nytimes.com/2013/09/01/opinion/sunday/weather-and-violence.html}}\
+{\field{\*\fldinst{HYPERLINK "http://www.ijhssnet.com/journals/Vol_3_No_10_Special_Issue_May_2013/7.pdf"}}{\fldrslt http://www.ijhssnet.com/journals/Vol_3_No_10_Special_Issue_May_2013/7.pdf}}\
+{\field{\*\fldinst{HYPERLINK "http://www.city-data.com/blog/28-weather-affect-crime-rates/"}}{\fldrslt http://www.city-data.com/blog/28-weather-affect-crime-rates/}}\
+{\field{\*\fldinst{HYPERLINK "http://www.city-data.com/blog/28-weather-affect-crime-rates/"}}{\fldrslt http://www.city-data.com/blog/28-weather-affect-crime-rates/}}\
+{\field{\*\fldinst{HYPERLINK "http://www.chicagotribune.com/news/data/ct-crime-heat-analysis-htmlstory.html"}}{\fldrslt http://www.chicagotribune.com/news/data/ct-crime-heat-analysis-htmlstory.html}}\
+\
+\pard\pardeftab720\sl280\partightenfactor0
+
+\f1 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Investigating the relationship between weather and violence in Baltimore, Maryland, USA\
+Crime seasonality and its variations across space\
+Crime, weather, and climate change\
+\
+Mapping Crime Prevention\
+{\field{\*\fldinst{HYPERLINK "https://link.springer.com/chapter/10.1007/978-3-319-27793-6_9"}}{\fldrslt https://link.springer.com/chapter/10.1007/978-3-319-27793-6_9}}\
+\
+Crime Trends\
+{\field{\*\fldinst{HYPERLINK "https://link.springer.com/article/10.1007/s10940-016-9317-6"}}{\fldrslt https://link.springer.com/article/10.1007/s10940-016-9317-6}}
+\f0 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
 \
 Example analysis from {\field{\*\fldinst{HYPERLINK "http://www.kimberlycoffey.com/blog/2017/5/crime-mapping-app"}}{\fldrslt http://www.kimberlycoffey.com/blog/2017/5/crime-mapping-app}}\
 \
 \pard\pardeftab720\sl320\partightenfactor0
 
-\f1\fs28 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 str(raw.data)\
+\f2\fs28 \cf3 \expnd0\expndtw0\kerning0
+str(raw.data)\
 range(raw.data$offense_date, na.rm=TRUE) # date range\
 \
 data <- raw.data\
@@ -68,8 +96,7 @@ remove(today, years.ago.1, years.ago.2, years.ago.3, years.ago.4, years.ago.5, y
 data$longer_desc <- paste(data$offense_date, data$offense_time, sep="")\
 data$longer_desc <- paste(data$longer_desc, data$offense_desc, sep=" ")\
 \
-\pard\pardeftab720\sl320\partightenfactor0
-\cf2 library(shiny)\
+library(shiny)\
 library(leaflet)\
 library(ggmap)\
 library(ggplot2)\
@@ -267,6 +294,5 @@ tags$p("Crime data is from the Baton Rouge Police Department",\
 \
 shinyApp(ui = ui, server = server)\
 \
-\pard\pardeftab720\sl320\partightenfactor0
-\cf2 \
+\
 }
