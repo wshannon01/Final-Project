@@ -13,17 +13,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Baltimore City consistently ranks as one of the most dangerous cities in America. [Add additional statistics about crime rate, etc.] As a result, discussion about safety concerns at Johns Hopkins is common. To promote a safe and secure environment, the Hopkins Corporate Security provides the University and Hospital communities proactive security and law enforcement practices. Corporate Security maintains a record of the campus crime and provides annual crime statistics. 
+Baltimore City consistently ranks as one of the most dangerous cities in America. As a result, discussion about safety concerns at Johns Hopkins is common. To promote a safe and secure environment, the Hopkins Corporate Security provides the University and Hospital communities proactive security and law enforcement practices. Corporate Security maintains a record of the campus crime and provides annual crime statistics. 
 
-The Hopkins Corporate Security crime log represents a rich source of crime data that can be analyzed for crime patterns to determine whether certain types of crime occur more frequently at certain locations, times of day, days of the week, or times of the year. Furthermore, understanding these patterns can help with crime projections to increase campus safety. For example, increased security personnel can be strategically positioned based upon crime patterns. Additionally, although Corporate Security notifies Hopkins of reported crimes that present a “serious or continuing threat” through “Security Alert” emails, detailed analysis of crime patterns can allow Corporate Security to inform the community about general crime “forecasts” as well as general safety precaution recommendations.
+The Hopkins Corporate Security Crime Log represents a rich source of crime data that can be analyzed for crime patterns. A recent article in PLOS|ONE reported that most crimes exhibit seasonal oscillations (Dong, PLOS|ONE, 2017). The Hopkins Security crime log can be used to determine whether certain types of crime occur more frequently at certain locations, times of day, days of the week, or times of the year at the Hopkins East Baltimore Medical Campus. Furthermore, understanding these patterns can help with crime projections to increase campus safety through crime prevention activities (Andresen, Applied Geography, 2013). For example, increased security personnel can be strategically positioned based upon crime patterns. Additionally, although Corporate Security notifies Hopkins of reported crimes that present a “serious or continuing threat” through “Security Alert” emails, detailed analysis of crime patterns can allow Corporate Security to inform the community about general crime “forecasts” as well as general safety precaution recommendations. To present this analysis in a useful and interactive format, this project involves not only the analysis of the Hopkins crime data but also the development of a Shiny App for interactive analysis and visualization. 
+
+Overall, the goal of the project is to provide a better understanding of the crime patterns at the Hopkins East Baltimore Campus through the analysis of trends in crime and the development of an application for interactive analysis and visualization.
+
 
 ## Methods
 
-Using data from the Johns Hopkins Corporate Security Alerts:
-1. Develop a street safety score and interactive spatial visualization of the street safety score. 
-2. Determine the locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.), and whether these patterns vary by month or season.
+The 2015, 2016, and 2017 Hopkins Crime Logs were obtained from the Johns Hopkins University Clery Compliance Administrator. The data logs were provided in tables in the PDF format. The tables were converted into the Excel spreadsheet using PDFTables (https://pdftables.com/). Afterwards, the spreadsheets were saved in CSV formats and loaded into R for further analysis. 
 
-By scraping the Security Alert emails from Corporate_Security@jhmi.edu, I will have crime alert data with information about the campus, incident type, location, date, time, suspect information, and narrative. Using this data, I will be able to calculate street safety scores based upon the rate of crimes and types of crimes. Additionally, I will analyze the data in aggregate to determine locations, times, and days of the week with the greatest number of crime reports of each type (assault, theft, etc.). I will also analyze the data by month and season to determine if there are temporal variations in crime patterns.
+Histograms are plotted using R to visually compare the frequency of different types of crimes in different years, seasons, months, and days of week. The data will be analyzed by month, season, and day of week to determine if there are temporal variations in crime patterns.
+
+For interactive analysis and visualization, a Johns Hopkins East Baltimore Crime Shiny Application is built using R.
 
 references:
 http://wtop.com/local/2016/02/d-c-baltimore-city-among-most-dangerous-places-in-u-s/
@@ -33,11 +36,7 @@ http://www.hopkinsmedicine.org/security_parking_transportation/security/
 http://security.jhu.edu/_template-assets/documents/annual_report.pdf
 
 ## Inport Data
-Data from Johns Hopkins Corporate Security
-
-Data aquisition plan: Data will be obtained by scraping emails sent from Corporate_Security@jhmi.edu with the subject “SECURITY ALERT” through the following steps:
-1. Establish forwarding rule to forward all past “SECURITY ALERT” emails from Corporate_Security@jhmi.edu to the email address provided by https://parser.zapier.com/ to extract the data.
-2. Create template to extract CAMPUS, INCIDENT TYPE, LOCATION, DATE, TIME, SUSPECT INFORMATION, and NARRATIVE text from emails.
+Data from Johns Hopkins University Clery Compliance Administrator after conversion to CSV formats.
 
 ```{r data}
 setwd("/Users/purplesw/Dropbox/final_project/data")
@@ -181,6 +180,57 @@ location <- 'http://www.edd.ca.gov/jobs_and_training/warn/WARN-Report-for-7-1-20
 
 # Extract the table
 out <- extract_tables(location)
+
+
+shinyUI(fluidPage(
+  title = "Johns Hopkins East Baltimore Medical Campus Crime Analysis"
+  br(),
+  img(src = "http://www.hopkinsmedicine.org/sebin/j/b/SOM_logo2x.png", height = 100, width = 200)
+  fluidRow(
+    column(3,
+           dateRangeInput(inputId = "date_time",
+                          label = "Choose Date Range",
+                          start = "2015-01-01",
+                          end = "2017-09-01"
+  )
+),
+column(8,
+       )
+  )
+  
+))
 ```
 
+
+
+## shiny
+```{r}
+library(shiny)
+
+
+
+shinyUI(fluidPage(
+ 
+  title = "Johns Hopkins East Baltimore Medical Campus Crime Analysis",
+  br(),
+  img(src = "http://www.hopkinsmedicine.org/sebin/j/b/SOM_logo2x.png", height = 100, width = 200),
+  fluidRow(
+    column(3,
+      dateRangeInput(inputId = "date_time",  
+                   label = "Choose Date Range", 
+                   start = "2015-01-01",
+                   end = "2017-09-01"
+     )
+    ),    
+    column(8, 
+      h3("Hopkins Crime Dataset Analysis"),
+      tabsetPanel( 
+      tabPanel("Summary", h4(verbatimTextOutput("dim")), h4("Structure of Dataset"), verbatimTextOutput("structure"), h4("Summary of Dataset"), verbatimTextOutput("summary"), h4("Crime Categories"), verbatimTextOutput("categoryTable"))
+      )
+    )
+  )
+)
+)
+
+```
 

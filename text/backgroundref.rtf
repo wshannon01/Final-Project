@@ -1,11 +1,42 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
 }
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red74\green74\blue74;}
-\margl1440\margr1440\vieww14760\viewh13460\viewkind0
+{\colortbl;\red255\green255\blue255;\red74\green74\blue74;}
+\margl1440\margr1440\vieww15020\viewh15520\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 Background and References\
+\f0\b\fs24 \cf0 Introduction:
+\b0 \
+\
+Baltimore City consistently ranks as one of the most dangerous cities in America. As a result, discussion about safety concerns at Johns Hopkins is common. To promote a safe and secure environment, the Hopkins Corporate Security provides the University and Hospital communities proactive security and law enforcement practices. Corporate Security maintains a record of the campus crime and provides annual crime statistics. \
+\
+The Hopkins Corporate Security Crime Log represents a rich source of crime data that can be analyzed for crime patterns. A recent article in PLOS|ONE reported that most crimes exhibit seasonal oscillations (Dong, PLOS|ONE, 2017). The Hopkins Security crime log can be used to determine whether certain types of crime occur more frequently at certain locations, times of day, days of the week, or times of the year at the Hopkins East Baltimore Medical Campus. Furthermore, understanding these patterns can help with crime projections to increase campus safety through crime prevention activities (Andresen, Applied Geography, 2013).  For example, increased security personnel can be strategically positioned based upon crime patterns. Additionally, although Corporate Security notifies Hopkins of reported crimes that present a \'93serious or continuing threat\'94 through \'93Security Alert\'94 emails, detailed analysis of crime patterns can allow Corporate Security to inform the community about general crime \'93forecasts\'94 as well as general safety precaution recommendations. To present this analysis in a useful and interactive format, this project involves not only the analysis of the Hopkins crime data but also the development of a Shiny App for interactive analysis and visualization. \
+\
+Overall, the goal of the project is to provide a better understanding of the crime patterns at the Hopkins East Baltimore Campus through the analysis of trends in crime and the development of an application for interactive analysis and visualization.\
+\
+
+\b Methods:
+\b0 \
+\
+The 2015, 2016, and 2017 Hopkins Crime Logs were obtained from the Johns Hopkins University Clery Compliance Administrator. The data logs were provided in tables in the PDF format. The tables were converted into the Excel spreadsheet using PDFTables ({\field{\*\fldinst{HYPERLINK "https://pdftables.com/"}}{\fldrslt https://pdftables.com/}}). Afterwards, the spreadsheets were saved in CSV formats and loaded into R for further analysis. \
+\
+Histograms are plotted using R to visually compare the frequency of different types of crimes in different years, seasons, months, and days of week. The data will be analyzed by month, season, and day of week to determine if there are temporal variations in crime patterns.\
+\
+For interactive analysis and visualization, a Johns Hopkins East Baltimore Crime Shiny Application is built using R.\
+\
+\
+
+\b References:
+\b0 \
+http://wtop.com/local/2016/02/d-c-baltimore-city-among-most-dangerous-places-in-u-s/\
+https://www.forbes.com/pictures/mlj45jggj/7-baltimore/#68a81b8b5487\
+http://baltimore.cbslocal.com/2017/06/16/baltimore-ranks-on-new-list-of-worst-american-cities-to-live-in/ \
+http://www.hopkinsmedicine.org/security_parking_transportation/security/\
+http://security.jhu.edu/_template-assets/documents/annual_report.pdf\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 Background and References\
 \
 {\field{\*\fldinst{HYPERLINK "http://www.iaca.net/Publications/Whitepapers/iacawp_2014_02_definition_types_crime_analysis.pdf"}}{\fldrslt http://www.iaca.net/Publications/Whitepapers/iacawp_2014_02_definition_types_crime_analysis.pdf}}\
 {\field{\*\fldinst{HYPERLINK "http://www.iaca.net/Resources/Articles/identifyingcrimepatterns.pdf"}}{\fldrslt http://www.iaca.net/Resources/Articles/identifyingcrimepatterns.pdf}}\
@@ -32,8 +63,8 @@ weather and crime\
 \
 \pard\pardeftab720\sl280\partightenfactor0
 
-\f1 \cf2 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Investigating the relationship between weather and violence in Baltimore, Maryland, USA\
+\f1 \cf0 \expnd0\expndtw0\kerning0
+Investigating the relationship between weather and violence in Baltimore, Maryland, USA\
 Crime seasonality and its variations across space\
 Crime, weather, and climate change\
 \
@@ -42,7 +73,7 @@ Mapping Crime Prevention\
 \
 Crime Trends\
 {\field{\*\fldinst{HYPERLINK "https://link.springer.com/article/10.1007/s10940-016-9317-6"}}{\fldrslt https://link.springer.com/article/10.1007/s10940-016-9317-6}}
-\f0 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0 \kerning1\expnd0\expndtw0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \
 \
@@ -50,7 +81,7 @@ Example analysis from {\field{\*\fldinst{HYPERLINK "http://www.kimberlycoffey.co
 \
 \pard\pardeftab720\sl320\partightenfactor0
 
-\f2\fs28 \cf3 \expnd0\expndtw0\kerning0
+\f2\fs28 \cf2 \expnd0\expndtw0\kerning0
 str(raw.data)\
 range(raw.data$offense_date, na.rm=TRUE) # date range\
 \
