@@ -87,6 +87,13 @@ library(reshape2)
 #dat.15$month <- months(as.Date(dat.15$Date.Time.Reported))
 #dat.15$quarter <- quarters(as.Date(dat.15$Date.Time.Reported))
 
+# extract time information from Date.Time.Occurred; if strsplit(as.character(x), " ")[[1]][3]  == "PM", add 12 hours except  
+
+dat.15$timehour <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
+dat.15$timeap <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3])
+
+#dat.15$timeday[dat.15$timehour]
+
 dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
 dat.15$day <- weekdays(dat.15$date)
 dat.15$month <- months(dat.15$date)
