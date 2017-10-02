@@ -44,6 +44,15 @@ dat.15 <- read.csv("2015crimelog.csv")
 dat.16 <- read.csv("2016crimelog.csv")
 dat.17 <- read.csv("2017crimelog.csv")
 ```
+
+## Differences in crime types in different years
+```{r}
+unique(dat.15$Crime)
+unique(dat.16$Crime)
+unique(dat.17$Crime)
+```
+
+
 ## Create plots
 ```{r}
 
