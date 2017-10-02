@@ -75,7 +75,7 @@ total <- rbind(total, d17)
 library(ggplot2)
 library(plotly)
 
-p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Yr)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Yr)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title = "Crime Frequency by Year", x = "Crime Type", y = "Number of Incidents")
 
 pp <- ggplotly(p) 
 
