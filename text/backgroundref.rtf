@@ -1,7 +1,8 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
 }
-{\colortbl;\red255\green255\blue255;\red74\green74\blue74;}
+{\colortbl;\red255\green255\blue255;\red53\green53\blue53;\red220\green161\blue13;\red74\green74\blue74;
+}
 \margl1440\margr1440\vieww15020\viewh15520\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
@@ -34,12 +35,26 @@ http://baltimore.cbslocal.com/2017/06/16/baltimore-ranks-on-new-list-of-worst-am
 http://www.hopkinsmedicine.org/security_parking_transportation/security/\
 http://security.jhu.edu/_template-assets/documents/annual_report.pdf\
 \
+t\cf2 o do combine buildings -> geocode building locations\cf0 \
+ggmap\
+{\field{\*\fldinst{HYPERLINK "http://stat405.had.co.nz/ggmap.pdf"}}{\fldrslt http://stat405.had.co.nz/ggmap.pdf}}\cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "http://zevross.com/blog/2014/03/19/geocoding-with-rs-ggmap-package/"}}{\fldrslt \cf3 http://zevross.com/blog/2014/03/19/geocoding-with-rs-ggmap-package/}}\
+\pard\pardeftab560\slleading20\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.shanelynn.ie/massive-geocoding-with-r-and-google-maps/"}}{\fldrslt \cf3 https://www.shanelynn.ie/massive-geocoding-with-r-and-google-maps/}}\
+\pard\pardeftab560\slleading20\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "http://www.storybench.org/geocode-csv-addresses-r/"}}{\fldrslt \cf3 http://www.storybench.org/geocode-csv-addresses-r/}}\
+\pard\pardeftab560\slleading20\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.r-bloggers.com/batch-geocoding-with-r-and-google-maps/"}}{\fldrslt \cf3 https://www.r-bloggers.com/batch-geocoding-with-r-and-google-maps/}}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
 \
 Background and References\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 {\field{\*\fldinst{HYPERLINK "http://www.iaca.net/Publications/Whitepapers/iacawp_2014_02_definition_types_crime_analysis.pdf"}}{\fldrslt \cf0 http://www.iaca.net/Publications/Whitepapers/iacawp_2014_02_definition_types_crime_analysis.pdf}}\
-{\field{\*\fldinst{HYPERLINK "http://www.iaca.net/Resources/Articles/identifyingcrimepatterns.pdf"}}{\fldrslt http://www.iaca.net/Resources/Articles/identifyingcrimepatterns.pdf}}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "http://www.iaca.net/Resources/Articles/identifyingcrimepatterns.pdf"}}{\fldrslt \cf0 http://www.iaca.net/Resources/Articles/identifyingcrimepatterns.pdf}}\
 {\field{\*\fldinst{HYPERLINK "https://arxiv.org/pdf/1409.2983.pdf"}}{\fldrslt https://arxiv.org/pdf/1409.2983.pdf}}\
 http://streetscore.media.mit.edu/about.html\
 http://streetscore.media.mit.edu/\
@@ -81,7 +96,7 @@ Example analysis from {\field{\*\fldinst{HYPERLINK "http://www.kimberlycoffey.co
 \
 \pard\pardeftab720\sl320\partightenfactor0
 
-\f2\fs28 \cf2 \expnd0\expndtw0\kerning0
+\f2\fs28 \cf4 \expnd0\expndtw0\kerning0
 str(raw.data)\
 range(raw.data$offense_date, na.rm=TRUE) # date range\
 \
