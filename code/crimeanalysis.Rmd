@@ -168,7 +168,14 @@ Need to do text processing of general locations (buildings, areas)
 look at groupings of general areas
 look at correlations of crime types, time and areas
 ```{r}
-table(dat.15$General.Location)
+t.15 <- table(dat.15$General.Location)
+d.15 <- as.data.frame(t.15)
+
+library("dataframes2xls")
+write.xls(d.15, "locationlist.xls")
+
+library("stringr")
+d.15$outside <- str_detect(d.15$Var1, "block")
 
 ```
 
