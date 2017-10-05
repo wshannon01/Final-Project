@@ -184,6 +184,11 @@ d.15$outside <- str_detect(d.15$Var1, "block")
 - rearrange labels for plots
 - add title and axis lables to plots
 
+Analysis 
+- crimes by location
+- crimes by inside/outside
+- crimes inside/outside by time of day
+- crimes inside/outside by season
 
 ## Testing tabulizer package
 
