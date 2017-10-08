@@ -100,7 +100,6 @@ library(reshape2)
 
 dat.15$dt <- sapply(dat.15$Date.Time.Occurred, function(x) as.POSIXlt(as.character(x), format = "%m/%d/%Y %I:%M %p", tz = "UTC"))
 
-# past timehour with AM/PM
 
 dat.15$timehour <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
 dat.15$timeap <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3])
@@ -119,14 +118,6 @@ tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
 tlabels <- c("Night", "Morning", "Afternoon", "Evening")
 dat.15$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
 
-
-# Morning (6:01 AM - 12 PM), Afternoon (12:01 PM - 6 PM), Evening (6:01 PM - 12 AM), Night (12:01 AM - 6 AM)
-dat.15$tod
-
-# tod function
-tod <- function(t, ap, df){
-  if(t )
-}
 
 #dat.15$timeday[dat.15$timehour]
 
@@ -204,7 +195,23 @@ write.xls(d.15, "locationlist.xls")
 library("stringr")
 d.15$outside <- str_detect(d.15$Var1, "block")
 
+dat.15$outside <- str_detect(dat.15$General.Location, "block")
+
 ```
+
+## Geocode Locations
+```{r}
+
+h.df <- geocode(c("1550 Orleans St, Baltimore", "1800 Orleans St, Baltimore"))
+h.df$name <- c("CRB", "Main Hospital")
+g.loc <- paste(h.df$lat, h.df$lon, sep = ":")
+m.google <- data.frame(h.df, g.loc)
+g.inter.map <- gvisMap(data = m.google, locationvar = "g.loc", tipvar = "name")
+plot(g.inter.map)
+
+```
+
+
 
 ## To Do
 - parse time of day from "Date.Time.Occurred"
