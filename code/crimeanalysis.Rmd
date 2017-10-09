@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Johns Hopkins Security Alert - Crime Analysis & Visualization
 
+## Abstract
+Crime analysis at Hopkins
+
 ## Introduction
 
 Baltimore City consistently ranks as one of the most dangerous cities in America. As a result, discussion about safety concerns at Johns Hopkins is common. To promote a safe and secure environment, the Hopkins Corporate Security provides the University and Hospital communities proactive security and law enforcement practices. Corporate Security maintains a record of the campus crime and provides annual crime statistics. 
@@ -24,9 +27,9 @@ Overall, the goal of the project is to provide a better understanding of the cri
 
 The 2015, 2016, and 2017 Hopkins Crime Logs were obtained from the Johns Hopkins University Clery Compliance Administrator. The data logs were provided in tables in the PDF format. The tables were converted into the Excel spreadsheet using PDFTables (https://pdftables.com/). Afterwards, the spreadsheets were saved in CSV formats and loaded into R for further analysis. 
 
-Histograms are plotted using R to visually compare the frequency of different types of crimes in different years, seasons, months, and days of week. The data will be analyzed by month, season, and day of week to determine if there are temporal variations in crime patterns.
+Interactive histograms are plotted using R to visually compare the frequency of different types of crimes using the ggplot2 and plotyly libraries. The data will be analyzed by month, season, day of week, and time of day to determine if there are temporal variations in crime patterns. For the analysis with time of day, the lubridate library is used. Times are classified into "Night" ("00:00" - "6:00"), "Morning" ("6:01" - "12:00"), "Afternoon" ("12:01" - "18:00"), and "Evening" ("18:01" - "23:59").
 
-For interactive analysis and visualization, a Johns Hopkins East Baltimore Crime Shiny Application is built using R.
+For interactive analysis and visualization, a Johns Hopkins East Baltimore Crime Shiny Application is built using R. The googleVis and ggmap libraries are used for plotting the interactive crime maps.
 
 references:
 http://wtop.com/local/2016/02/d-c-baltimore-city-among-most-dangerous-places-in-u-s/
