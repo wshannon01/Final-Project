@@ -205,6 +205,10 @@ dat.15$outside <- str_detect(dat.15$General.Location, "block")
 
 ## Geocode Locations
 ```{r}
+jh.map <- qmap("johns hopkins hospital", zoom = 14)
+
+jh.map + geom_point(aes(x=lon, y=lat, colour = name), data = h.df) + ggtitle("Map of Crime at the Johns Hopkins East Baltimore Medical Campus")
+
 
 h.df <- geocode(c("1550 Orleans St, Baltimore", "1800 Orleans St, Baltimore"))
 h.df$name <- c("CRB", "Main Hospital")
@@ -212,6 +216,28 @@ g.loc <- paste(h.df$lat, h.df$lon, sep = ":")
 m.google <- data.frame(h.df, g.loc)
 g.inter.map <- gvisMap(data = m.google, locationvar = "g.loc", tipvar = "name")
 plot(g.inter.map)
+
+
+# cite: http://www.storybench.org/geocode-csv-addresses-r/
+setwd("/Users/purplesw/Dropbox/final_project/data")
+origAddress <- read.csv("location.csv", stringsAsFactors = FALSE)
+geocoded <- data.frame(stringsAsFactors = FALSE)
+
+# Loop through the addresses to get the latitude and longitude of each address and add it to the
+# origAddress data frame in new columns lat and lon
+for(i in 1:nrow(origAddress))
+{
+  # Print("Working...")
+  result <- geocode(origAddress$addresses[i], output = "latlona", source = "google")
+  origAddress$lon[i] <- as.numeric(result[1])
+  origAddress$lat[i] <- as.numeric(result[2])
+  origAddress$geoAddress[i] <- as.character(result[3])
+}
+# Write a CSV file containing origAddress to the working directory
+write.csv(origAddress, "geocoded.csv", row.names=FALSE)
+
+
+#plot(crime$lon, crime$lat, xlab = "lon", ylab = "lat")
 
 ```
 
