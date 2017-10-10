@@ -62,24 +62,33 @@ unique(dat.17$Crime)
 
 t15 <- table(dat.15$Crime)
 d15 <- as.data.frame(t15)
-d15$Yr <- "15"
-  
+d15$Year <- "2015"
+d15 <- d15[-1,]
+
+
+dat.16 <- dat.16[!dat.16$Crime=="",]
+dat.16 <- dat.16[!dat.16$Crime=="21",]
 t16 <- table(dat.16$Crime)
 d16 <- as.data.frame(t16)
-d16$Yr <- "16"
+d16$Year <- "2016"
+d16 <- d16[-1:-2,]
 
+dat.17 <- dat.17[!dat.17$Crime=="",]
+dat.17 <- dat.17[!dat.17$Crime=="18",]
 t17 <- table(dat.17$Crime)
+
 d17 <- as.data.frame(t17)
-d17$Yr <- "17"
+d17$Year <- "2017"
+d17 <- d17[-1:-2,]
 
 total <- rbind(d15, d16)
 total <- rbind(total, d17)
 
 
 library(ggplot2)
-library(plotly)
+#library(plotly)
 
-p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Yr)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title = "Crime Frequency by Year", x = "Crime Type", y = "Number of Incidents")
+p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Year)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = c(0.95, 0.85), axis.title = element_text(face = "bold")) + labs(x = "Crime Type", y = "Number of Incidents") + ggtitle("Crime Frequency by Year")
 
 pp <- ggplotly(p) 
 
@@ -102,7 +111,7 @@ library(reshape2)
 
 # extract time information from Date.Time.Occurred; if strsplit(as.character(x), " ")[[1]][3]  == "PM", add 12 hours except  
 
-dat.15$dt <- sapply(dat.15$Date.Time.Occurred, function(x) as.POSIXlt(as.character(x), format = "%m/%d/%Y %I:%M %p", tz = "UTC"))
+#dat.15$dt <- sapply(dat.15$Date.Time.Occurred, function(x) as.POSIXlt(as.character(x), format = "%m/%d/%Y %I:%M %p", tz = "UTC"))
 
 
 dat.15$timehour <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
@@ -112,8 +121,6 @@ dat.15$times <- paste(dat.15$timehour, dat.15$timeap)
 
 dat.15$mtime <- substr(strptime(dat.15$times, "%I:%M %p"), 11,19)
 
-library(lubridate)
-
 
 dat.15$mtime <- trimws(dat.15$mtime)
 
@@ -121,6 +128,11 @@ time <- hour(hms(dat.15$mtime))
 tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
 tlabels <- c("Night", "Morning", "Afternoon", "Evening")
 dat.15$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+
+crime.tod.15 <- as.data.frame(table(dat.15$Crime, dat.15$tod))
+crime.tod.15 <- crime.tod.15[-c(1, 15, 29, 43),]
+
+pd <- ggplot(data = crime.tod.15, aes(x=Var1, y=Freq, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = c(0.95, 0.85), axis.title = element_text(face = "bold")) + labs(x = "Crime Type", y = "Number of Incidents") + ggtitle("Crime Frequency by Time of Day for 2015") + guides(fill = guide_legend(title = "Time of Day"))
 
 
 #dat.15$timeday[dat.15$timehour]
@@ -136,7 +148,11 @@ dw15 <- as.data.frame(table(dat.15$Crime, dat.15$day))
 
 dwm15 <- melt(dw15, c("Var1", "Var2"))
 
-pd <- ggplot(data = dwm15, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+dwm15.s <- dwm15[dwm15$Var1== "Assault" | dwm15$Var1== "Theft", ]
+
+pd <- ggplot(data = dwm15, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) + ggtitle("Crime Frequency by Day of Week for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
+
+pd.s <- ggplot(data = dwm15.s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) + ggtitle("Crime Frequency by Day of Week for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
 ppd <- ggplotly(pd) 
 
@@ -146,7 +162,13 @@ dw15m <- as.data.frame(table(dat.15$Crime, dat.15$month))
 
 dwm15m <- melt(dw15m, c("Var1", "Var2"))
 
-pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+dwm15m.s <- dwm15m[dwm15m$Var1== "Assault" | dwm15m$Var1== "Theft", ]
+
+#pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) + ggtitle("Crime Frequency by Month for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
+
+pm.s <- ggplot(data = dwm15m.s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) + ggtitle("Crime Frequency by Month for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
 ppm <- ggplotly(pm) 
 
@@ -176,13 +198,16 @@ dw15s <- as.data.frame(table(newdat.15$Crime, newdat.15$Season))
 
 dwm15s <- melt(dw15s, c("Var1", "Var2"))
 
-ps <- ggplot(data = dwm15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+#ps <- ggplot(data = dwm15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ps <- ggplot(data = dw15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Spring", "Summer", "Autumn", "Winter")) + ggtitle("Crime Frequency by Season for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
 pps <- ggplotly(ps) 
 
 pps
 
 ```
+
 
 ## Location
 Need to do text processing of general locations (buildings, areas)
@@ -221,6 +246,17 @@ plot(g.inter.map)
 # cite: http://www.storybench.org/geocode-csv-addresses-r/
 setwd("/Users/purplesw/Dropbox/final_project/data")
 origAddress <- read.csv("location.csv", stringsAsFactors = FALSE)
+
+a.df <- as.data.frame(table(origAddress$addresses))
+
+for(i in 1:nrow(a.df)){
+  temp <- geocode(as.character(a.df$Var1[i]))
+  a.df$lon[i] <- temp$lon
+  a.df$lat[i] <- temp$lat
+  Sys.sleep(2)
+}
+
+
 geocoded <- data.frame(stringsAsFactors = FALSE)
 
 # Loop through the addresses to get the latitude and longitude of each address and add it to the
@@ -232,12 +268,42 @@ for(i in 1:nrow(origAddress))
   origAddress$lon[i] <- as.numeric(result[1])
   origAddress$lat[i] <- as.numeric(result[2])
   origAddress$geoAddress[i] <- as.character(result[3])
+  Sys.sleep(2)
 }
 # Write a CSV file containing origAddress to the working directory
 write.csv(origAddress, "geocoded.csv", row.names=FALSE)
+write.csv(a.df, "uniquegeocode.csv", row.names=FALSE)
+
+setwd("/Users/purplesw/Dropbox/final_project/code")
+g.df <- read.csv("uniquegeocode.csv", stringsAsFactors = FALSE)
+
+plot(g.df$lon, g.df$lat, xlab = "longitude", ylab = "latitude", main = "Longitude and Latitude of Crime Locations")
+
+jhu.map <- qmap("johns hopkins hospital", zoom = 16)
+jhu.map + geom_point(aes(x = lon, y = lat, colour = factor(Freq)), size = 2, data = g.df)
 
 
-#plot(crime$lon, crime$lat, xlab = "lon", ylab = "lat")
+jhu.1 + geom_point(aes(x = lon, y = lat, colour = factor(Freq)), size = 3, data = g.df) + scale_fill_discrete(name = "Crime Incidents \nat Each Location")
+
+#plot(g.df$lon, g.df$lat, xlab = "lon", ylab = "lat", xlim = c(-76.59734, -76.5), ylim = c(39.2, 39.3))
+```
+
+## create tables
+```{r}
+library(xtable)
+options(xtable.floating = FALSE)
+
+c.types.15 <- table(dat.15$Crime)
+
+x.c.types.15 <- xtable(c.types.15)
+print(xtable(c.types.15, caption = "Crime Types and Frequency"), caption.placement = "top")
+
+c.types.16 <- table(dat.16$Crime)
+print(xtable(c.types.16))
+
+c.types.17 <- table(dat.17$Crime)
+print(xtable(c.types.17))
+
 
 ```
 
