@@ -200,7 +200,7 @@ dwm15s <- melt(dw15s, c("Var1", "Var2"))
 
 #ps <- ggplot(data = dwm15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ps <- ggplot(data = dw15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Spring", "Summer", "Autumn", "Winter")) + ggtitle("Crime Frequency by Season for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
+ps <- ggplot(data = dwm15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Spring", "Summer", "Autumn", "Winter")) + ggtitle("Crime Frequency by Season for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
 pps <- ggplotly(ps) 
 
@@ -220,6 +220,8 @@ d.15 <- as.data.frame(t.15)
 
 library("dataframes2xls")
 write.xls(d.15, "locationlist.xls")
+
+write.xls(d.15, "locationtest.xls", quote = FALSE)
 
 library("stringr")
 d.15$outside <- str_detect(d.15$Var1, "block")
@@ -277,10 +279,33 @@ write.csv(a.df, "uniquegeocode.csv", row.names=FALSE)
 setwd("/Users/purplesw/Dropbox/final_project/code")
 g.df <- read.csv("uniquegeocode.csv", stringsAsFactors = FALSE)
 
+colnames(g.df)[1] <- "addresses"
+geo.loc <- left_join(origAddress, g.df, by  = "addresses")
+
+dat.15.a <- dat.15
+colnames(dat.15.a)[5] <- "Var1"
+
+for(i in 1:nrow(geo.loc)){
+  geo.loc$Var1[i] <- noquote(geo.loc$Var1[i])
+}
+
+
+geo.loc.t <- left_join(dat.15.a, geo.loc, by = "Var1")
+
+
+
+geo.loc.t.df <- as.data.frame(table(geo.loc.t$addresses))
+
+colnames(geo.loc.t.df)[1] <- "addresses"
+
+g.df.t <- left_join(geo.loc.t.df, g.df, by = "addresses")
+
 plot(g.df$lon, g.df$lat, xlab = "longitude", ylab = "latitude", main = "Longitude and Latitude of Crime Locations")
 
 jhu.map <- qmap("johns hopkins hospital", zoom = 16)
 jhu.map + geom_point(aes(x = lon, y = lat, colour = factor(Freq)), size = 2, data = g.df)
+
+jhu.1 + geom_point(aes(x = lon, y = lat, colour = factor(Freq.x)), size = 2, data = g.df.t)
 
 
 jhu.1 + geom_point(aes(x = lon, y = lat, colour = factor(Freq)), size = 3, data = g.df) + scale_fill_discrete(name = "Crime Incidents \nat Each Location")
