@@ -11,12 +11,24 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Johns Hopkins Security Alert - Crime Analysis & Visualization
 
+## Install necessary packages
+```{r}
+packages<-c("lubridate", "dplyr","ggplot2","reshape2","ggmap", "xtable")
+
+for (i in packages){
+  if(!require(i,character.only = T,quietly=T,warn.conflicts = F)){
+    install.packages(i)
+  }
+  require(i,character.only = T,quietly=T,warn.conflicts = F)
+}
+
+```
+
+
 ## Inport Data
 Data from Johns Hopkins University Clery Compliance Administrator after conversion to CSV formats.
 
 ```{r data}
-#setwd("/Users/purplesw/Dropbox/final_project/data")
-#setwd("~/final_project/data")
 setwd("./data")
 dat.15 <- read.csv("2015crimelog.csv")
 dat.16 <- read.csv("2016crimelog.csv")
@@ -34,6 +46,7 @@ unique(dat.17$Crime)
 ## Create plots
 ```{r}
 
+library(ggplot2)
 t15 <- table(dat.15$Crime)
 d15 <- as.data.frame(t15)
 d15$Year <- "2015"
@@ -58,14 +71,13 @@ total <- rbind(d15, d16)
 total <- rbind(total, d17)
 
 
-library(ggplot2)
 #library(plotly)
 
 p <- ggplot(data = total, aes(x=Var1, y=Freq, fill = Year)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = c(0.95, 0.85), axis.title = element_text(face = "bold")) + labs(x = "Crime Type", y = "Number of Incidents") + ggtitle("Crime Frequency by Year")
 
-pp <- ggplotly(p) 
+#pp <- ggplotly(p) 
 
-pp
+#pp
 
 
 ```
@@ -135,9 +147,6 @@ crime.tod.17 <- as.data.frame(table(dat.16$Crime, dat.16$tod))
 
 
 
-
-
-
 #dat.15$timeday[dat.15$timehour]
 
 dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
@@ -157,9 +166,13 @@ pd <- ggplot(data = dwm15, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="i
 
 pd.s <- ggplot(data = dwm15.s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) + ggtitle("Crime Frequency by Day of Week for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
-ppd <- ggplotly(pd) 
+pd
 
-ppd
+pd.s
+
+#ppd <- ggplotly(pd) 
+
+#ppd
 
 dw15m <- as.data.frame(table(dat.15$Crime, dat.15$month))
 
@@ -173,9 +186,13 @@ pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="
 
 pm.s <- ggplot(data = dwm15m.s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) + ggtitle("Crime Frequency by Month for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
-ppm <- ggplotly(pm) 
+pm
 
-ppm
+pm.s
+
+#ppm <- ggplotly(pm) 
+
+#ppm
 
 dw15q <- as.data.frame(table(dat.15$Crime, dat.15$quarter))
 
@@ -183,11 +200,13 @@ dwm15q <- melt(dw15q, c("Var1", "Var2"))
 
 pq <- ggplot(data = dwm15q, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ppq <- ggplotly(pq) 
+#ppq <- ggplotly(pq) 
 
-ppq
+#ppq
 
 # seasons
+
+newdat.15 <- dat.15
 
 newdat.15$num.month <- match(newdat.15$month, month.name)
 
@@ -205,14 +224,18 @@ dwm15s <- melt(dw15s, c("Var1", "Var2"))
 
 ps <- ggplot(data = dwm15s, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.title=element_blank(), plot.title = element_text(hjust = 0.5, face = "bold"), axis.title = element_text(face = "bold")) + scale_fill_discrete(breaks = c("Spring", "Summer", "Autumn", "Winter")) + ggtitle("Crime Frequency by Season for 2015") + labs(x = "Crime Type", y = "Number of Incidents")
 
-pps <- ggplotly(ps) 
+ps
 
-pps
+#pps <- ggplotly(ps) 
+
+#pps
 
 ```
 
 ## Statistical Testing: ANOVA
 ```{r}
+
+library(xtable)
 
 dat.15.theft <- filter(dat.15, dat.15$Crime == "Theft")
 dat.16.theft <- filter(dat.16, dat.16$Crime == "Theft")
@@ -243,82 +266,26 @@ test.aov <- aov(count ~ tod, data = test)
 TH <- TukeyHSD(test.aov)
 pt <- pairwise.t.test(test$count, test$tod)
 
-print(xtable(TH$tod))
+#print(xtable(TH$tod))
 
-print(xtable(pt$p.value))
-
-```
-
-
-
-## Location
-Need to do text processing of general locations (buildings, areas)
-155 unique locations 
-look at groupings of general areas
-look at correlations of crime types, time and areas
-```{r}
-t.15 <- table(dat.15$General.Location)
-d.15 <- as.data.frame(t.15)
-
-library("dataframes2xls")
-write.xls(d.15, "locationlist.xls")
-
-write.xls(d.15, "locationtest.xls", quote = FALSE)
-
-library("stringr")
-d.15$outside <- str_detect(d.15$Var1, "block")
-
-dat.15$outside <- str_detect(dat.15$General.Location, "block")
+#print(xtable(pt$p.value))
 
 ```
+
 
 ## Geocode Locations
-```{r}
+```{r, eval = FALSE}
+
+library(ggmap)
+setwd("./data")
+
 jh.map <- qmap("johns hopkins hospital", zoom = 14)
 
-jh.map + geom_point(aes(x=lon, y=lat, colour = name), data = h.df) + ggtitle("Map of Crime at the Johns Hopkins East Baltimore Medical Campus")
+#jh.map + geom_point(aes(x=lon, y=lat, colour = name), data = h.df) + ggtitle("Map of Crime at the Johns Hopkins East Baltimore Medical Campus")
 
-
-h.df <- geocode(c("1550 Orleans St, Baltimore", "1800 Orleans St, Baltimore"))
-h.df$name <- c("CRB", "Main Hospital")
-g.loc <- paste(h.df$lat, h.df$lon, sep = ":")
-m.google <- data.frame(h.df, g.loc)
-g.inter.map <- gvisMap(data = m.google, locationvar = "g.loc", tipvar = "name")
-plot(g.inter.map)
-
-
-# cite: http://www.storybench.org/geocode-csv-addresses-r/
-setwd("/Users/purplesw/Dropbox/final_project/data")
 origAddress <- read.csv("location.csv", stringsAsFactors = FALSE)
 
 a.df <- as.data.frame(table(origAddress$addresses))
-
-for(i in 1:nrow(a.df)){
-  temp <- geocode(as.character(a.df$Var1[i]))
-  a.df$lon[i] <- temp$lon
-  a.df$lat[i] <- temp$lat
-  Sys.sleep(2)
-}
-
-
-geocoded <- data.frame(stringsAsFactors = FALSE)
-
-# Loop through the addresses to get the latitude and longitude of each address and add it to the
-# origAddress data frame in new columns lat and lon
-for(i in 1:nrow(origAddress))
-{
-  # Print("Working...")
-  result <- geocode(origAddress$addresses[i], output = "latlona", source = "google")
-  origAddress$lon[i] <- as.numeric(result[1])
-  origAddress$lat[i] <- as.numeric(result[2])
-  origAddress$geoAddress[i] <- as.character(result[3])
-  Sys.sleep(2)
-}
-# Write a CSV file containing origAddress to the working directory
-write.csv(origAddress, "geocoded.csv", row.names=FALSE)
-write.csv(a.df, "uniquegeocode.csv", row.names=FALSE)
-
-#setwd("/Users/purplesw/Dropbox/final_project/code")
 g.df <- read.csv("uniquegeocode.csv", stringsAsFactors = FALSE)
 
 colnames(g.df)[1] <- "addresses"
@@ -327,15 +294,8 @@ geo.loc <- left_join(origAddress, g.df, by  = "addresses")
 dat.15.a <- dat.15
 colnames(dat.15.a)[5] <- "Var1"
 
-for(i in 1:nrow(geo.loc)){
-  geo.loc$Var1[i] <- noquote(geo.loc$Var1[i])
-}
-
 
 geo.loc.t <- left_join(dat.15.a, geo.loc, by = "Var1")
-
-
-
 geo.loc.t.df <- as.data.frame(table(geo.loc.t$addresses))
 
 colnames(geo.loc.t.df)[1] <- "addresses"
@@ -352,7 +312,6 @@ jhu.1 + geom_point(aes(x = lon, y = lat, colour = factor(Freq.x)), size = 2, dat
 
 jhu.1 + geom_point(aes(x = lon, y = lat, colour = factor(Freq)), size = 3, data = g.df) + scale_fill_discrete(name = "Crime Incidents \nat Each Location")
 
-#plot(g.df$lon, g.df$lat, xlab = "lon", ylab = "lat", xlim = c(-76.59734, -76.5), ylim = c(39.2, 39.3))
 ```
 
 ## create tables
@@ -374,18 +333,6 @@ print(xtable(c.types.17))
 
 ```
 
-
-
-## To Do
-- parse time of day from "Date.Time.Occurred"
-- rearrange labels for plots
-- add title and axis lables to plots
-
-Analysis 
-- crimes by location
-- crimes by inside/outside
-- crimes inside/outside by time of day
-- crimes inside/outside by season
 
 
 
