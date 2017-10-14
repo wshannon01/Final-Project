@@ -30,6 +30,51 @@ unique(dat.16$Crime)
 unique(dat.17$Crime)
 ```
 
+## Load Necessary Libraries
+```{r}
+packages<-c("lubridate", "dplyr","ggplot2","reshape2","ggmap", "xtable")
+
+for (i in packages){
+  if(!require(i,character.only = T,quietly=T,warn.conflicts = F)){
+    install.packages(i)
+  }
+  require(i,character.only = T,quietly=T,warn.conflicts = F)
+}
+
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(ggmap)
+library(xtable)
+
+```
+
+## Format data 
+create time of day, day of week, month, season, year, inside (outside), location
+```{r}
+
+```
+
+## Longitudinal plot of total crimes by month
+```{r}
+
+```
+
+## To do
+compare weekend vs. weekday cromes
+compare inside vs. outside crimes
+multifacet plot w/ theft and assault (longitudinal plots)
+total crime count for each month
+
+for plots - set origin to zero
+relable, refactor, set stringsAsFactors = FALSE
+
+```{r}
+
+```
+
+
 
 ## Create plots
 ```{r}
