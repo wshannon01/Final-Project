@@ -151,6 +151,7 @@ dg.dwm15 <- as.data.frame(g.dwm15)
 dg.dwm15$Var2 <- factor(dg.dwm15$Var2, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 
 dg.dwm15[order(dg.dwm15$Var2),]
+
 plot.d15 <- ggplot(data = dg.dwm15, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
 
 
@@ -633,6 +634,50 @@ Analysis
 - crimes inside/outside by season
 
 
+```{r}
+ui <- shinyUI(
+  
+  
+  navbarPage("Hopkins Crime Statistics",
+             theme = "style.css", 
+             # includeCSS("map.css"),
+             
+             ## Sidebar content
+             tabPanel("Crime Trends",
+                      sidebarLayout(
+                        sidebarPanel(
+                          # menuItem("Widgets", tabName = "widgets", icon = icon("th")),
+                          selectInput("crime.type", "Crime Description", 
+                                      choices = crime.type, selected = crime.type[7]),
+                          checkboxGroupInput("year", label = "Year",
+                                             choices = unique.years,
+                                             selected = tail(unique.years,2), 
+                                             inline = T)
+                        ),
+                        mainPanel( 
+                          fluidRow(column(plotOutput("plot1"), width = 11)),
+                          fluidRow(column(includeMarkdown('references.Rmd'), width = 11))
+                        )
+                      )
+             ),
+             tabPanel("Map",
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput("crime.type.map", "Crime Description", 
+                                      choices = crime.type, selected = crime.type[1]),
+                          selectInput("year.map", "Year",
+                                      choices = unique.years, selected = unique.years[1])
+                        ),
+                        mainPanel( 
+                          fluidRow(column(leafletOutput("mymap"), width = 11)),
+                          fluidRow(column(includeMarkdown('references.Rmd'), width = 11))
+                        )
+                      )
+             )
+             
+  )
+)
+```
 
 
 
