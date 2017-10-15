@@ -17,7 +17,7 @@ library(reshape2)
 library(ggmap)
 library(chron)
 library(leaflet)
-library(plotly)
+#library(plotly)
 
 # load data
 # set directory
@@ -95,7 +95,7 @@ ui <- fluidPage(
                 
               ),
               mainPanel( 
-                fluidRow(column(plotlyOutput("plot1"), width = 11))
+                fluidRow(column(plotOutput("plot1"), width = 11))
                 #fluidRow(column(includeMarkdown('references.Rmd'), width = 11))
               )
             )
