@@ -54,56 +54,89 @@ library(ggplot2)
 library(reshape2)
 library(ggmap)
 library(xtable)
+library(chron)
+library(magrittr)
 
 ```
 
 ## Format data 
 create time of day, day of week, month, season, year, inside (outside), location
 ```{r}
+# remove blank entries
+dat.15 <- dat.15[!dat.15$Crime == "",]
+
 dat.15$time <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) #time without AM, PM
 dat.15$ap <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3]) # AM, PM
 
 
-dat.15$timeap <- paste(dat.15$time, dat.15$timeap) # combine time and AM, PM
-# remove whitespace
-dat.15$mtime <- substr(strptime(dat.15$time, "%I:%M %p"), 11,19) 
+dat.15$timeap <- paste(dat.15$time, dat.15$ap) # combine time and AM, PM
+# convert to military time
+dat.15$mtime <- substr(strptime(dat.15$timeap, "%I:%M %p"), 11,19) 
+# remove white space
 dat.15$mtime <- trimws(dat.15$mtime)
 
-time <- hour(hms(dat.15$mtime)) # convert to military time
+dat.15$ctime <- hour(hms(dat.15$mtime)) 
+#dat.15$ttimes <- times(dat.15$mtime) 
 # categorize times into time of day (tod)
-tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
-tlabels <- c("Night", "Morning", "Afternoon", "Evening") 
-dat.15$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+tbreaks <- hour(hm("00:00", "5:00", "11:00", "17:00", "23:59"))
+tlabels <- c("Night", "Morning", "Afternoon", "Evening")
+#dat.15$tod <- cut(x=dat.15$ttime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+dat.15$tod <- cut(x=dat.15$ctime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
 
 # table crimes by tod
 crime.tod.15 <- as.data.frame(table(dat.15$Crime, dat.15$tod))
-crime.tod.15 <- crime.tod.15[-c(1, 15, 29, 43),]
+
 
 # 2016 data
-dat.16$timehour <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
-dat.16$timeap <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3])
-dat.16$times <- paste(dat.16$timehour, dat.16$timeap)
-dat.16$mtime <- substr(strptime(dat.16$times, "%I:%M %p"), 11,19)
+# remove blank entries
+dat.16 <- dat.16[!dat.16$Crime == "",]
+dat.16 <- dat.16[!dat.16$Crime == "21",]
+
+dat.16$time <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) #time without AM, PM
+dat.16$ap <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3]) # AM, PM
+
+
+dat.16$timeap <- paste(dat.16$time, dat.16$ap) # combine time and AM, PM
+# convert to military time
+dat.16$mtime <- substr(strptime(dat.16$timeap, "%I:%M %p"), 11,19) 
+# remove white space
 dat.16$mtime <- trimws(dat.16$mtime)
-time <- hour(hms(dat.16$mtime))
-tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
+
+dat.16$ctime <- hour(hms(dat.16$mtime)) 
+#dat.15$ttimes <- times(dat.15$mtime) 
+# categorize times into time of day (tod)
+tbreaks <- hour(hm("00:00", "5:00", "11:00", "17:00", "23:59"))
 tlabels <- c("Night", "Morning", "Afternoon", "Evening")
-dat.16$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+#dat.15$tod <- cut(x=dat.15$ttime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+dat.16$tod <- cut(x=dat.16$ctime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+
+# table crimes by tod
 crime.tod.16 <- as.data.frame(table(dat.16$Crime, dat.16$tod))
 
 # 2017 data
-dat.17$timehour <- sapply(dat.17$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
-dat.17$timeap <- sapply(dat.17$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3])
-dat.17$times <- paste(dat.17$timehour, dat.17$timeap)
-dat.17$mtime <- substr(strptime(dat.17$times, "%I:%M %p"), 11,19)
-dat.17$mtime <- trimws(dat.17$mtime)
-time <- hour(hms(dat.17$mtime))
-tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
-# Night: [0, 6], (6, 12], (12, 18], (18, 23:59]
-tlabels <- c("Night", "Morning", "Afternoon", "Evening")
-dat.17$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
-crime.tod.17 <- as.data.frame(table(dat.16$Crime, dat.16$tod))
+dat.17 <- dat.17[!dat.17$Crime == "",]
+dat.17 <- dat.17[!dat.17$Crime == "18",]
 
+dat.17$time <- sapply(dat.17$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) #time without AM, PM
+dat.17$ap <- sapply(dat.17$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3]) # AM, PM
+
+
+dat.17$timeap <- paste(dat.17$time, dat.17$ap) # combine time and AM, PM
+# convert to military time
+dat.17$mtime <- substr(strptime(dat.17$timeap, "%I:%M %p"), 11,19) 
+# remove white space
+dat.17$mtime <- trimws(dat.17$mtime)
+
+dat.17$ctime <- hour(hms(dat.17$mtime)) 
+#dat.15$ttimes <- times(dat.15$mtime) 
+# categorize times into time of day (tod)
+tbreaks <- hour(hm("00:00", "5:00", "11:00", "17:00", "23:59"))
+tlabels <- c("Night", "Morning", "Afternoon", "Evening")
+#dat.15$tod <- cut(x=dat.15$ttime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+dat.17$tod <- cut(x=dat.17$ctime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+
+# table crimes by tod
+crime.tod.17 <- as.data.frame(table(dat.17$Crime, dat.17$tod))
 
 
 # date, day, month, quarter
@@ -111,23 +144,87 @@ dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.charact
 dat.15$day <- weekdays(dat.15$date)
 dat.15$month <- months(dat.15$date)
 dat.15$quarter <- quarters(dat.15$date)
-dat.15 <- dat.15[-288,]
 dw15 <- as.data.frame(table(dat.15$Crime, dat.15$day))
 dwm15 <- melt(dw15, c("Var1", "Var2"))
+g.dwm15 <- dwm15 %>% group_by(Var2) %>% summarise(n = sum(value))
+dg.dwm15 <- as.data.frame(g.dwm15) 
+dg.dwm15$Var2 <- factor(dg.dwm15$Var2, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+dg.dwm15[order(dg.dwm15$Var2),]
+plot.d15 <- ggplot(data = dg.dwm15, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+
+
+# create 1 dataframe, label by years, overlay plots
+
+dwm15.a <- dwm15[dwm15$Var1== "Assault",]
+dwm15.ad <- dwm15.a %>% group_by(Var2) %>% summarise(n = sum(value))
+d.dwm15.ad <- as.data.frame(dwm15.ad) 
+d.dwm15.ad$Var2 <- factor(d.dwm15.ad$Var2, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+d.dwm15.ad <- d.dwm15.ad[order(d.dwm15.ad$Var2),]
+
+plot.a15 <- ggplot(data = d.dwm15.ad, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+
 dwm15.s <- dwm15[dwm15$Var1== "Assault" | dwm15$Var1== "Theft", ]
 
 
-
-
-
 dw15m <- as.data.frame(table(dat.15$Crime, dat.15$month))
-
 dwm15m <- melt(dw15m, c("Var1", "Var2"))
+g.dwm15m <- dwm15m %>% group_by(Var2) %>% summarise(n = sum(value))
 
-dwm15m.s <- dwm15m[dwm15m$Var1== "Assault" | dwm15m$Var1== "Theft", ]
+dg.dwm15m <- as.data.frame(g.dwm15m) 
+dg.dwm15m$Var2 <- factor(dg.dwm15m$Var2, levels = month.name)
+#dwm15m.s <- dwm15m[dwm15m$Var1== "Assault" | dwm15m$Var1== "Theft", ]
 
 #pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+plot.m15 <- ggplot(data = dg.dwm15m, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1))) + geom_smooth((aes(group = 1)))
+
+
+#2016
+dat.16$date <- sapply(dat.16$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.16$day <- weekdays(dat.16$date)
+dat.16$month <- months(dat.16$date)
+dat.16$quarter <- quarters(dat.16$date)
+dw16 <- as.data.frame(table(dat.16$Crime, dat.16$day))
+dwm16 <- melt(dw16, c("Var1", "Var2"))
+dwm16.s <- dwm16[dwm16$Var1== "Assault" | dwm16$Var1== "Theft", ]
+
+
+dw16m <- as.data.frame(table(dat.16$Crime, dat.16$month))
+dwm16m <- melt(dw16m, c("Var1", "Var2"))
+g.dwm16m <- dwm16m %>% group_by(Var2) %>% summarise(n = sum(value))
+
+dg.dwm16m <- as.data.frame(g.dwm16m) 
+dg.dwm16m$Var2 <- factor(dg.dwm16m$Var2, levels = month.name)
+#dwm15m.s <- dwm15m[dwm15m$Var1== "Assault" | dwm15m$Var1== "Theft", ]
+
+#pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+plot.m16 <- ggplot(data = dg.dwm16m, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1))) + geom_smooth((aes(group = 1)))
+
+
+#2017
+dat.17$date <- sapply(dat.17$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.17$day <- weekdays(dat.17$date)
+dat.17$month <- months(dat.17$date)
+dat.17$quarter <- quarters(dat.17$date)
+dw17 <- as.data.frame(table(dat.17$Crime, dat.17$day))
+dwm17 <- melt(dw17, c("Var1", "Var2"))
+dwm17.s <- dwm17[dwm17$Var1== "Assault" | dwm17$Var1== "Theft", ]
+
+
+dw17m <- as.data.frame(table(dat.17$Crime, dat.17$month))
+dwm17m <- melt(dw17m, c("Var1", "Var2"))
+g.dwm17m <- dwm17m %>% group_by(Var2) %>% summarise(n = sum(value))
+
+dg.dwm17m <- as.data.frame(g.dwm17m) 
+dg.dwm17m <- dg.dwm17m[!dg.dwm17m$Var2=="September",]
+dg.dwm17m$Var2 <- factor(dg.dwm17m$Var2, levels = month.name)
+#dwm15m.s <- dwm15m[dwm15m$Var1== "Assault" | dwm15m$Var1== "Theft", ]
+
+#pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+plot.m17 <- ggplot(data = dg.dwm17m, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1))) + geom_smooth((aes(group = 1)))
 
 
 dw15q <- as.data.frame(table(dat.15$Crime, dat.15$quarter))
@@ -153,6 +250,7 @@ dwm15s <- melt(dw15s, c("Var1", "Var2"))
 ```
 
 ## Longitudinal plot of total crimes by month
+
 ```{r}
 
 ```
@@ -165,6 +263,12 @@ total crime count for each month
 
 for plots - set origin to zero
 relable, refactor, set stringsAsFactors = FALSE
+
+notes for shiny options
+- select crime type
+- select year
+- select patterns by day, month, season
+
 
 ```{r}
 
