@@ -18,9 +18,16 @@ Data from Johns Hopkins University Clery Compliance Administrator after conversi
 #setwd("/Users/purplesw/Dropbox/final_project/data")
 #setwd("~/final_project/data")
 setwd("./data")
-dat.15 <- read.csv("2015crimelog.csv")
-dat.16 <- read.csv("2016crimelog.csv")
-dat.17 <- read.csv("2017crimelog.csv")
+dat.15 <- read.csv("2015crimelog.csv", stringsAsFactor = FALSE)
+dat.16 <- read.csv("2016crimelog.csv", stringsAsFactor = FALSE)
+dat.17 <- read.csv("2017crimelog.csv", stringsAsFactor = FALSE)
+
+str(dat.15)
+str(dat.16)
+str(dat.17)
+
+
+
 ```
 
 ## Differences in crime types in different years
@@ -53,6 +60,95 @@ library(xtable)
 ## Format data 
 create time of day, day of week, month, season, year, inside (outside), location
 ```{r}
+dat.15$time <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) #time without AM, PM
+dat.15$ap <- sapply(dat.15$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3]) # AM, PM
+
+
+dat.15$timeap <- paste(dat.15$time, dat.15$timeap) # combine time and AM, PM
+# remove whitespace
+dat.15$mtime <- substr(strptime(dat.15$time, "%I:%M %p"), 11,19) 
+dat.15$mtime <- trimws(dat.15$mtime)
+
+time <- hour(hms(dat.15$mtime)) # convert to military time
+# categorize times into time of day (tod)
+tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
+tlabels <- c("Night", "Morning", "Afternoon", "Evening") 
+dat.15$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+
+# table crimes by tod
+crime.tod.15 <- as.data.frame(table(dat.15$Crime, dat.15$tod))
+crime.tod.15 <- crime.tod.15[-c(1, 15, 29, 43),]
+
+# 2016 data
+dat.16$timehour <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
+dat.16$timeap <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3])
+dat.16$times <- paste(dat.16$timehour, dat.16$timeap)
+dat.16$mtime <- substr(strptime(dat.16$times, "%I:%M %p"), 11,19)
+dat.16$mtime <- trimws(dat.16$mtime)
+time <- hour(hms(dat.16$mtime))
+tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
+tlabels <- c("Night", "Morning", "Afternoon", "Evening")
+dat.16$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+crime.tod.16 <- as.data.frame(table(dat.16$Crime, dat.16$tod))
+
+# 2017 data
+dat.17$timehour <- sapply(dat.17$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) 
+dat.17$timeap <- sapply(dat.17$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3])
+dat.17$times <- paste(dat.17$timehour, dat.17$timeap)
+dat.17$mtime <- substr(strptime(dat.17$times, "%I:%M %p"), 11,19)
+dat.17$mtime <- trimws(dat.17$mtime)
+time <- hour(hms(dat.17$mtime))
+tbreaks <- hour(hm("00:00", "6:00", "12:00", "18:00", "23:59"))
+# Night: [0, 6], (6, 12], (12, 18], (18, 23:59]
+tlabels <- c("Night", "Morning", "Afternoon", "Evening")
+dat.17$tod <- cut(x=time, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+crime.tod.17 <- as.data.frame(table(dat.16$Crime, dat.16$tod))
+
+
+
+# date, day, month, quarter
+dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.15$day <- weekdays(dat.15$date)
+dat.15$month <- months(dat.15$date)
+dat.15$quarter <- quarters(dat.15$date)
+dat.15 <- dat.15[-288,]
+dw15 <- as.data.frame(table(dat.15$Crime, dat.15$day))
+dwm15 <- melt(dw15, c("Var1", "Var2"))
+dwm15.s <- dwm15[dwm15$Var1== "Assault" | dwm15$Var1== "Theft", ]
+
+
+
+
+
+dw15m <- as.data.frame(table(dat.15$Crime, dat.15$month))
+
+dwm15m <- melt(dw15m, c("Var1", "Var2"))
+
+dwm15m.s <- dwm15m[dwm15m$Var1== "Assault" | dwm15m$Var1== "Theft", ]
+
+#pm <- ggplot(data = dwm15m, aes(x=Var1, y=value, fill = Var2)) + geom_bar(stat="identity", position=position_dodge()) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+dw15q <- as.data.frame(table(dat.15$Crime, dat.15$quarter))
+
+dwm15q <- melt(dw15q, c("Var1", "Var2"))
+
+# seasons
+
+newdat.15$num.month <- match(newdat.15$month, month.name)
+
+newdat.15 <-
+newdat.15 %>%
+  mutate(Season = ifelse(num.month >= 3 & num.month <= 5, "Spring", 
+                          ifelse(num.month >= 6 & num.month <= 8, "Summer",
+                            ifelse(num.month >= 9 & num.month <= 11, "Autumn", "Winter"))))
+
+dw15s <- as.data.frame(table(newdat.15$Crime, newdat.15$Season))
+
+dwm15s <- melt(dw15s, c("Var1", "Var2"))
+
+
 
 ```
 
