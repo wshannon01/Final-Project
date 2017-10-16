@@ -74,11 +74,26 @@ dat.15$timeap <- paste(dat.15$time, dat.15$ap) # combine time and AM, PM
 dat.15$mtime <- substr(strptime(dat.15$timeap, "%I:%M %p"), 11,19) 
 # remove white space
 dat.15$mtime <- trimws(dat.15$mtime)
-
+# extract hour information
 dat.15$hours <- as.numeric(substr(dat.15$mtime, 1,2))
 
+#dh15m <- dat.15 %>% filter() add filtering statements
+
+# create function for summarizing total crime vs. variable of interest
+
+crime.sum <- function(df, x){
+  dft <- as.data.frame(table(df$Crime, df[,x]))
+  dft <- melt(dft, c("Var1", "Var2"))
+  g.dft <- dft %>% group_by(Var2) %>% summarize(n = sum(value))
+  dg.dft <- as.data.frame(g.dft)
+  
+  p <- ggplot(data = dg.dft, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+  return(p)
+  
+}
 
 
+crime.sum(dat.15, "hours")
 
 dh15 <- as.data.frame(table(dat.15$Crime, dat.15$hours))
 dh15 <- melt(dh15, c("Var1", "Var2"))
