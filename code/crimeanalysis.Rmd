@@ -75,6 +75,33 @@ dat.15$mtime <- substr(strptime(dat.15$timeap, "%I:%M %p"), 11,19)
 # remove white space
 dat.15$mtime <- trimws(dat.15$mtime)
 
+dat.15$hours <- as.numeric(substr(dat.15$mtime, 1,2))
+
+
+
+
+dh15 <- as.data.frame(table(dat.15$Crime, dat.15$hours))
+dh15 <- melt(dh15, c("Var1", "Var2"))
+g.dh15 <- dh15 %>% group_by(Var2) %>% summarise(n = sum(value))
+dg.dh15 <- as.data.frame(g.dh15) 
+
+dg.dh15$Var2 <- factor(dg.dh15$Var2)
+
+#dg.dwm15[order(dg.dwm15$Var2),]
+# plot by hour
+plot.dh15 <- ggplot(data = dg.dh15, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+
+
+
+
+
+
+
+
+
+
+
+
 dat.15$ctime <- hour(hms(dat.15$mtime)) 
 #dat.15$ttimes <- times(dat.15$mtime) 
 # categorize times into time of day (tod)

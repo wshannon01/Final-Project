@@ -140,7 +140,8 @@ server <- function(input, output) {
     
     leaflet() %>%
       addTiles() %>%
-      addMarkers(lng=-76.591633, lat=39.2970515)
+      setView(lng=-76.591633, lat=39.2970515, zoom = 12) %>%
+      addProviderTiles(providers$CartoDB.Positron)
 
   })
 }
