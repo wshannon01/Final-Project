@@ -152,7 +152,87 @@ crime.sum.yr <- function(df15, df16, g.dft.17, x){
   
 }
 
-crime.sum.yr(dat.15, dat.16, dg.dft.17, "month")
+crime.h <- function(df15, df16, df17, x){
+  dft.15 <- as.data.frame(table(df15$Crime, df15[,x]))
+  dft.16 <- as.data.frame(table(df16$Crime, df16[,x]))
+  dft.17 <- as.data.frame(table(df17$Crime, df17[,x]))
+  dft.15 <- melt(dft.15, c("Var1", "Var2"))
+  dft.16 <- melt(dft.16, c("Var1", "Var2"))
+  dft.17 <- melt(dft.17, c("Var1", "Var2"))
+  g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.17 <- dft.17 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
+  g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
+  g.dft.17 <- g.dft.17 %>% mutate(year = 2017)
+  dg.dft.15 <- as.data.frame(g.dft.15)
+  dg.dft.16 <- as.data.frame(g.dft.16)
+  dg.dft.17 <- as.data.frame(g.dft.17)
+  m.df <- rbind(g.dft.15, g.dft.16)
+  m.df <- rbind(m.df, g.dft.17)
+  
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + stat_smooth(se = FALSE) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = c(0.8,0.9), legend.title = element_blank()) + ylab("Crime Count") + xlab("Hours in Military Time") + ggtitle("Total Crime by Hour")
+  return(p)
+  
+}
+
+
+crime.t <- function(df15, df16, df17, x){
+  dft.15 <- as.data.frame(table(df15$Crime, df15[,x]))
+  dft.16 <- as.data.frame(table(df16$Crime, df16[,x]))
+  dft.17 <- as.data.frame(table(df17$Crime, df17[,x]))
+  dft.15 <- melt(dft.15, c("Var1", "Var2"))
+  dft.16 <- melt(dft.16, c("Var1", "Var2"))
+  dft.17 <- melt(dft.17, c("Var1", "Var2"))
+  g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.17 <- dft.17 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
+  g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
+  g.dft.17 <- g.dft.17 %>% mutate(year = 2017)
+  dg.dft.15 <- as.data.frame(g.dft.15)
+  dg.dft.16 <- as.data.frame(g.dft.16)
+  dg.dft.17 <- as.data.frame(g.dft.17)
+  m.df <- rbind(g.dft.15, g.dft.16)
+  m.df <- rbind(m.df, g.dft.17)
+  
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + stat_smooth(se = FALSE) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = c(0.8,0.9), legend.title = element_blank()) + ylab("Crime Count") + xlab(NULL) + ggtitle("Total Crime by Time of Day")
+  return(p)
+  
+}
+
+crime.d <- function(df15, df16, df17, x){
+  dft.15 <- as.data.frame(table(df15$Crime, df15[,x]))
+  dft.16 <- as.data.frame(table(df16$Crime, df16[,x]))
+  dft.17 <- as.data.frame(table(df17$Crime, df17[,x]))
+  dft.15 <- melt(dft.15, c("Var1", "Var2"))
+  dft.16 <- melt(dft.16, c("Var1", "Var2"))
+  dft.17 <- melt(dft.17, c("Var1", "Var2"))
+  g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.17 <- dft.17 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
+  g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
+  g.dft.17 <- g.dft.17 %>% mutate(year = 2017)
+  dg.dft.15 <- as.data.frame(g.dft.15)
+  dg.dft.16 <- as.data.frame(g.dft.16)
+  dg.dft.17 <- as.data.frame(g.dft.17)
+  m.df <- rbind(g.dft.15, g.dft.16)
+  m.df <- rbind(m.df, g.dft.17)
+  
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + stat_smooth(se = FALSE) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = c(0.8,0.9), legend.title = element_blank()) + ylab("Crime Count") + xlab(NULL) + ggtitle("Total Crime by Day")
+  return(p)
+  
+}
+
+dcrime <- crime.d(dat.15, dat.16, dat.17, "day")
+tcrime <- crime.t(dat.15, dat.16, dat.17, "tod")
+hcrime <- crime.h(dat.15, dat.16, dat.17, "hours")
+mcrime <- crime.sum.yr(dat.15, dat.16, dg.dft.17, "month")
+
+plot_grid(mcrime, dcrime, hcrime, tcrime, labels = c("A", "B", "C", "D"))
+
+
 
 #theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
