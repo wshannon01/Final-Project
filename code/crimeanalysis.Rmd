@@ -38,6 +38,7 @@ unique(dat.17$Crime)
 ```
 
 ## Load Necessary Libraries
+Note: use ‘ggplot2’ 2.2.0 (add note to readme file)
 ```{r}
 packages<-c("lubridate", "dplyr","ggplot2","reshape2","ggmap", "xtable")
 
@@ -77,10 +78,33 @@ dat.15$mtime <- trimws(dat.15$mtime)
 # extract hour information
 dat.15$hours <- as.numeric(substr(dat.15$mtime, 1,2))
 
+dat.15$ctime <- hour(hms(dat.15$mtime)) 
+#dat.15$ttimes <- times(dat.15$mtime) 
+# categorize times into time of day (tod)
+tbreaks <- hour(hm("00:00", "5:00", "11:00", "17:00", "23:59"))
+tlabels <- c("Night", "Morning", "Afternoon", "Evening")
+#dat.15$tod <- cut(x=dat.15$ttime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+dat.15$tod <- cut(x=dat.15$ctime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
+
+# date, day, month, quarter
+dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.15$day <- weekdays(dat.15$date)
+dat.15$day <- factor(dat.15$day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+dat.15$month <- months(dat.15$date)
+dat.15$month <- factor(dat.15$month, levels = month.name)
+dat.15$quarter <- quarters(dat.15$date)
+
+
+
+# table crimes by tod
+crime.tod.15 <- as.data.frame(table(dat.15$Crime, dat.15$tod))
+
 #dh15m <- dat.15 %>% filter() add filtering statements
 
 # create function for summarizing total crime vs. variable of interest
 
+# TO DO: Add Axis Labels and Title
 crime.sum <- function(df, x){
   dft <- as.data.frame(table(df$Crime, df[,x]))
   dft <- melt(dft, c("Var1", "Var2"))
@@ -94,17 +118,20 @@ crime.sum <- function(df, x){
 
 
 crime.sum(dat.15, "hours")
+crime.sum(dat.15, "tod")
+crime.sum(dat.15, "day")
+crime.sum(dat.15, "month")
 
-dh15 <- as.data.frame(table(dat.15$Crime, dat.15$hours))
-dh15 <- melt(dh15, c("Var1", "Var2"))
-g.dh15 <- dh15 %>% group_by(Var2) %>% summarise(n = sum(value))
-dg.dh15 <- as.data.frame(g.dh15) 
+#dh15 <- as.data.frame(table(dat.15$Crime, dat.15$hours))
+#dh15 <- melt(dh15, c("Var1", "Var2"))
+#g.dh15 <- dh15 %>% group_by(Var2) %>% summarise(n = sum(value))
+#dg.dh15 <- as.data.frame(g.dh15) 
 
-dg.dh15$Var2 <- factor(dg.dh15$Var2)
+#dg.dh15$Var2 <- factor(dg.dh15$Var2)
 
 #dg.dwm15[order(dg.dwm15$Var2),]
 # plot by hour
-plot.dh15 <- ggplot(data = dg.dh15, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+#plot.dh15 <- ggplot(data = dg.dh15, aes(x=Var2, y=n)) + theme(axis.text.x = #element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
 
 
 
@@ -117,16 +144,7 @@ plot.dh15 <- ggplot(data = dg.dh15, aes(x=Var2, y=n)) + theme(axis.text.x = elem
 
 
 
-dat.15$ctime <- hour(hms(dat.15$mtime)) 
-#dat.15$ttimes <- times(dat.15$mtime) 
-# categorize times into time of day (tod)
-tbreaks <- hour(hm("00:00", "5:00", "11:00", "17:00", "23:59"))
-tlabels <- c("Night", "Morning", "Afternoon", "Evening")
-#dat.15$tod <- cut(x=dat.15$ttime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
-dat.15$tod <- cut(x=dat.15$ctime, breaks = tbreaks, labels = tlabels, include.lowest = TRUE)
 
-# table crimes by tod
-crime.tod.15 <- as.data.frame(table(dat.15$Crime, dat.15$tod))
 
 
 # 2016 data

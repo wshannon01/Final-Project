@@ -95,7 +95,7 @@ ui <- fluidPage(
                 
               ),
               mainPanel( 
-                fluidRow(column(plotOutput("plot1"), width = 11))
+                fluidRow(column(plotlyOutput("plot1"), width = 11))
                 #fluidRow(column(includeMarkdown('references.Rmd'), width = 11))
               )
             )
@@ -123,14 +123,14 @@ server <- function(input, output) {
   
   output$plot1 <- renderPlot({
     data <- dg.dwm15
-    ggplot(data, 
+    p <- ggplot(data, 
            aes(x = Var2, y = n)) +
       stat_smooth(se = F) + geom_point() + 
       scale_color_brewer(palette="Set1",
                          name = "Year") + 
       labs(title = paste('Total Crime Occurences by', input$pattern, 'in', input$year),
            x = "", y = "Occurrences") + geom_line(group = 1)
-    #ggplotly(p)
+    ggplotly(p)
       #scale_x_continuous(breaks = 1:12, labels = month(1:12, label = T) ) +
       #fte_theme()
   })
