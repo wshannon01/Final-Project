@@ -95,6 +95,17 @@ dat.15$month <- months(dat.15$date)
 dat.15$month <- factor(dat.15$month, levels = month.name)
 dat.15$quarter <- quarters(dat.15$date)
 
+# seasons
+
+dat.15$num.month <- match(dat.15$month, month.name)
+
+dat.15 <-
+dat.15 %>%
+  mutate(season = ifelse(num.month >= 3 & num.month <= 5, "Spring", 
+                          ifelse(num.month >= 6 & num.month <= 8, "Summer",
+                            ifelse(num.month >= 9 & num.month <= 11, "Autumn", "Winter"))))
+
+dat.15$season <- factor(dat.15$season, levels = c("Spring", "Summer", "Autumn", "Winter"))
 
 
 # table crimes by tod
@@ -111,16 +122,57 @@ crime.sum <- function(df, x){
   g.dft <- dft %>% group_by(Var2) %>% summarize(n = sum(value))
   dg.dft <- as.data.frame(g.dft)
   
-  p <- ggplot(data = dg.dft, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+  p <- ggplot(data = dg.dft, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + stat_smooth((aes(group = 1)), se = FALSE)
   return(p)
   
 }
 
 
+crime.sum.yr <- function(df15, df16, x){
+  dft.15 <- as.data.frame(table(df15$Crime, df15[,x]))
+  dft.16 <- as.data.frame(table(df16$Crime, df16[,x]))
+  dft.15 <- melt(dft.15, c("Var1", "Var2"))
+  dft.16 <- melt(dft.16, c("Var1", "Var2"))
+  g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
+  g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
+  dg.dft.15 <- as.data.frame(g.dft.15)
+  dg.dft.16 <- as.data.frame(g.dft.16)
+  m.df <- rbind(g.dft.15, g.dft.16)
+  
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + stat_smooth(se = FALSE)
+  return(p)
+  
+}
+
+  dft.15 <- as.data.frame(table(dat.15$Crime, dat.15[,"month"]))
+  dft.16 <- as.data.frame(table(dat.16$Crime, dat.16[,"month"]))
+  dft.15 <- melt(dft.15, c("Var1", "Var2"))
+  dft.16 <- melt(dft.16, c("Var1", "Var2"))
+  g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
+  g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
+  g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
+  dg.dft.15 <- as.data.frame(g.dft.15)
+  dg.dft.16 <- as.data.frame(g.dft.16)
+  m.df <- rbind(dg.dft.15, dg.dft.16)
+  #m.df <- left_join(g.dft.15, g.dft.16, by = "Var2")
+
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, color = factor(year))) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + stat_smooth((aes(group = 2)),se = FALSE)
+
+ggplot(data = m.df, aes(x=Var2, y=n, color = year)) + geom_point()
+
+p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + geom_smooth(se = FALSE) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+crime.sum.yr(dat.15, dat.16, "month")
+
 crime.sum(dat.15, "hours")
 crime.sum(dat.15, "tod")
 crime.sum(dat.15, "day")
 crime.sum(dat.15, "month")
+
+crime.sum(dat.15, "season")
 
 #dh15 <- as.data.frame(table(dat.15$Crime, dat.15$hours))
 #dh15 <- melt(dh15, c("Var1", "Var2"))
@@ -134,19 +186,6 @@ crime.sum(dat.15, "month")
 #plot.dh15 <- ggplot(data = dg.dh15, aes(x=Var2, y=n)) + theme(axis.text.x = #element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 2016 data
 # remove blank entries
 dat.16 <- dat.16[!dat.16$Crime == "",]
@@ -154,13 +193,12 @@ dat.16 <- dat.16[!dat.16$Crime == "21",]
 
 dat.16$time <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][2]) #time without AM, PM
 dat.16$ap <- sapply(dat.16$Date.Time.Occurred, function(x) strsplit(as.character(x), " ")[[1]][3]) # AM, PM
-
-
 dat.16$timeap <- paste(dat.16$time, dat.16$ap) # combine time and AM, PM
 # convert to military time
 dat.16$mtime <- substr(strptime(dat.16$timeap, "%I:%M %p"), 11,19) 
 # remove white space
 dat.16$mtime <- trimws(dat.16$mtime)
+dat.16$hours <- as.numeric(substr(dat.16$mtime, 1,2))
 
 dat.16$ctime <- hour(hms(dat.16$mtime)) 
 #dat.15$ttimes <- times(dat.15$mtime) 
@@ -172,6 +210,25 @@ dat.16$tod <- cut(x=dat.16$ctime, breaks = tbreaks, labels = tlabels, include.lo
 
 # table crimes by tod
 crime.tod.16 <- as.data.frame(table(dat.16$Crime, dat.16$tod))
+
+# date, day, month, quarter
+dat.16$date <- sapply(dat.16$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.16$day <- weekdays(dat.16$date)
+dat.16$day <- factor(dat.16$day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+dat.16$month <- months(dat.16$date)
+dat.16$month <- factor(dat.16$month, levels = month.name)
+dat.16$quarter <- quarters(dat.16$date)
+
+dat.16$num.month <- match(dat.16$month, month.name)
+
+dat.16 <-
+dat.16 %>%
+  mutate(season = ifelse(num.month >= 3 & num.month <= 5, "Spring", 
+                          ifelse(num.month >= 6 & num.month <= 8, "Summer",
+                            ifelse(num.month >= 9 & num.month <= 11, "Autumn", "Winter"))))
+
+dat.16$season <- factor(dat.16$season, levels = c("Spring", "Summer", "Autumn", "Winter"))
 
 # 2017 data
 dat.17 <- dat.17[!dat.17$Crime == "",]
@@ -198,25 +255,36 @@ dat.17$tod <- cut(x=dat.17$ctime, breaks = tbreaks, labels = tlabels, include.lo
 # table crimes by tod
 crime.tod.17 <- as.data.frame(table(dat.17$Crime, dat.17$tod))
 
+# date, day, month, quarter
+dat.17$date <- sapply(dat.17$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+dat.17$day <- weekdays(dat.17$date)
+dat.17$day <- factor(dat.17$day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+dat.17$month <- months(dat.17$date)
+dat.17$month <- factor(dat.17$month, levels = month.name)
+dat.17$quarter <- quarters(dat.17$date)
+
+
 
 # date, day, month, quarter
-dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
-dat.15$day <- weekdays(dat.15$date)
-dat.15$month <- months(dat.15$date)
-dat.15$quarter <- quarters(dat.15$date)
-dw15 <- as.data.frame(table(dat.15$Crime, dat.15$day))
-dwm15 <- melt(dw15, c("Var1", "Var2"))
-g.dwm15 <- dwm15 %>% group_by(Var2) %>% summarise(n = sum(value))
-dg.dwm15 <- as.data.frame(g.dwm15) 
-dg.dwm15$Var2 <- factor(dg.dwm15$Var2, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+#dat.15$date <- sapply(dat.15$Date.Time.Reported, function(x) strsplit(as.character(x), " ")[[1]][1]) %>% mdy()
+#dat.15$day <- weekdays(dat.15$date)
+#dat.15$month <- months(dat.15$date)
+#dat.15$quarter <- quarters(dat.15$date)
+#dw15 <- as.data.frame(table(dat.15$Crime, dat.15$day))
+#dwm15 <- melt(dw15, c("Var1", "Var2"))
+#g.dwm15 <- dwm15 %>% group_by(Var2) %>% summarise(n = sum(value))
+#dg.dwm15 <- as.data.frame(g.dwm15) 
+#dg.dwm15$Var2 <- factor(dg.dwm15$Var2, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 
-dg.dwm15[order(dg.dwm15$Var2),]
+#dg.dwm15[order(dg.dwm15$Var2),]
 
-plot.d15 <- ggplot(data = dg.dwm15, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
+#plot.d15 <- ggplot(data = dg.dwm15, aes(x=Var2, y=n)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_line((aes(group = 1)))
 
 
 # create 1 dataframe, label by years, overlay plots
 
+# filter by crime type and then plot by another variable of interest
 dwm15.a <- dwm15[dwm15$Var1== "Assault",]
 dwm15.ad <- dwm15.a %>% group_by(Var2) %>% summarise(n = sum(value))
 d.dwm15.ad <- as.data.frame(dwm15.ad) 
