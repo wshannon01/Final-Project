@@ -128,23 +128,34 @@ crime.sum <- function(df, x){
 }
 
 
-crime.sum.yr <- function(df15, df16, x){
+crime.sum.yr <- function(df15, df16, g.dft.17, x){
   dft.15 <- as.data.frame(table(df15$Crime, df15[,x]))
   dft.16 <- as.data.frame(table(df16$Crime, df16[,x]))
+  #dft.17 <- as.data.frame(table(df17$Crime, df17[,x]))
   dft.15 <- melt(dft.15, c("Var1", "Var2"))
   dft.16 <- melt(dft.16, c("Var1", "Var2"))
+  #dft.17 <- melt(dft.17, c("Var1", "Var2"))
   g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
   g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
+  #g.dft.17 <- dft.17 %>% group_by(Var2) %>% summarize(n = sum(value))
   g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
   g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
+  #g.dft.17 <- g.dft.17 %>% mutate(year = 2017)
   dg.dft.15 <- as.data.frame(g.dft.15)
   dg.dft.16 <- as.data.frame(g.dft.16)
+  #dg.dft.17 <- as.data.frame(g.dft.17)
   m.df <- rbind(g.dft.15, g.dft.16)
+  m.df <- rbind(m.df, g.dft.17)
   
-  p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + stat_smooth(se = FALSE)
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + stat_smooth(se = FALSE) + theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = c(0.8,0.9), legend.title = element_blank()) + ylab("Crime Count") + xlab(NULL) + ggtitle("Total Crime by Month")
   return(p)
   
 }
+
+crime.sum.yr(dat.15, dat.16, dg.dft.17, "month")
+
+#theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 
   dft.15 <- as.data.frame(table(dat.15$Crime, dat.15[,"month"]))
   dft.16 <- as.data.frame(table(dat.16$Crime, dat.16[,"month"]))
@@ -159,13 +170,13 @@ crime.sum.yr <- function(df15, df16, x){
   m.df <- rbind(dg.dft.15, dg.dft.16)
   #m.df <- left_join(g.dft.15, g.dft.16, by = "Var2")
 
-  p <- ggplot(data = m.df, aes(x=Var2, y=n, color = factor(year))) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + stat_smooth((aes(group = 2)),se = FALSE)
+  p <- ggplot(data = m.df, aes(x=Var2, y=n, color = factor(year))) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + stat_smooth((aes(group = 2)),se = FALSE) + theme_classic()
 
 ggplot(data = m.df, aes(x=Var2, y=n, color = year)) + geom_point()
 
 p <- ggplot(data = m.df, aes(x=Var2, y=n, group = factor(year), color = factor(year))) + geom_smooth(se = FALSE) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-crime.sum.yr(dat.15, dat.16, "month")
+crime.sum.yr(dat.15, dat.16, "month") # need to end 2017 data in August (last complete month of data collection)
 
 crime.sum(dat.15, "hours")
 crime.sum(dat.15, "tod")
@@ -243,6 +254,8 @@ dat.17$timeap <- paste(dat.17$time, dat.17$ap) # combine time and AM, PM
 dat.17$mtime <- substr(strptime(dat.17$timeap, "%I:%M %p"), 11,19) 
 # remove white space
 dat.17$mtime <- trimws(dat.17$mtime)
+dat.17$hours <- as.numeric(substr(dat.17$mtime, 1,2))
+
 
 dat.17$ctime <- hour(hms(dat.17$mtime)) 
 #dat.15$ttimes <- times(dat.15$mtime) 
