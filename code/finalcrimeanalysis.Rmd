@@ -2,7 +2,9 @@
 title: "Temporal Crime Trends at the Johns Hopkins East Baltimore Campus"
 author: "Shannon Wongvibulsin"
 date: "October 23, 2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -10,9 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Load Necessary Libraries
-Note: use ‘ggplot2’ 2.2.0 (add note to readme file)
+
 ```{r}
-packages<-c("lubridate", "dplyr","ggplot2","reshape2", "xtable")
+packages<-c("lubridate", "dplyr","ggplot2","reshape2", "xtable", "magrittr", "chron", "cowplot")
 
 for (i in packages){
   if(!require(i,character.only = T,quietly=T,warn.conflicts = F)){
@@ -26,8 +28,9 @@ library(dplyr)
 library(ggplot2)
 library(reshape2)
 library(xtable)
-library(chron)
 library(magrittr)
+library(chron)
+library(cowplot)
 
 ```
 
@@ -35,8 +38,7 @@ library(magrittr)
 Data from Johns Hopkins University Clery Compliance Administrator after conversion to CSV formats.
 
 ```{r data}
-#setwd("/Users/purplesw/Dropbox/final_project/data")
-#setwd("~/final_project/data")
+
 setwd("./data")
 dat.15 <- read.csv("2015crimelog.csv", stringsAsFactor = FALSE)
 dat.16 <- read.csv("2016crimelog.csv", stringsAsFactor = FALSE)
@@ -162,6 +164,19 @@ dat.17$day <- factor(dat.17$day, levels = c("Monday", "Tuesday", "Wednesday", "T
 dat.17$month <- months(dat.17$date)
 dat.17$month <- factor(dat.17$month, levels = month.name)
 
+dft.17 <- as.data.frame(table(dat.17$Crime, dat.17[,"month"]))
+dft.17 <- melt(dft.17, c("Var1", "Var2"))
+g.dft.17 <- dft.17 %>% group_by(Var2) %>% summarize(n = sum(value))
+g.dft.17 <- g.dft.17 %>% mutate(year = 2017)
+g.dft.17 <- as.data.frame(g.dft.17)
+g.dft.17[9:12, "n"] <- NA
+
+```
+
+
+## Plot crime trends
+
+```{r}
 
 # create function for summarizing total crime vs. variable of interest
 crime.sum <- function(df, x){
@@ -270,29 +285,23 @@ crime.d <- function(df15, df16, df17, x){
   
 }
 
-  dft.15 <- as.data.frame(table(dat.15$Crime, dat.15[,"month"]))
-  dft.16 <- as.data.frame(table(dat.16$Crime, dat.16[,"month"]))
-  dft.15 <- melt(dft.15, c("Var1", "Var2"))
-  dft.16 <- melt(dft.16, c("Var1", "Var2"))
-  g.dft.15 <- dft.15 %>% group_by(Var2) %>% summarize(n = sum(value))
-  g.dft.16 <- dft.16 %>% group_by(Var2) %>% summarize(n = sum(value))
-  g.dft.15 <- g.dft.15 %>% mutate(year = 2015)
-  g.dft.16 <- g.dft.16 %>% mutate(year = 2016)
-  dg.dft.15 <- as.data.frame(g.dft.15)
-  dg.dft.16 <- as.data.frame(g.dft.16)
-  m.df <- rbind(dg.dft.15, dg.dft.16)
-  #m.df <- left_join(g.dft.15, g.dft.16, by = "Var2")
 
 dcrime <- crime.d(dat.15, dat.16, dat.17, "day")
 tcrime <- crime.t(dat.15, dat.16, dat.17, "tod")
 hcrime <- crime.h(dat.15, dat.16, dat.17, "hours")
-mcrime <- crime.sum.yr(dat.15, dat.16, dg.dft.17, "month")
+mcrime <- crime.sum.yr(dat.15, dat.16, g.dft.17, "month")
 
 plot_grid(mcrime, dcrime, hcrime, tcrime, labels = c("A", "B", "C", "D"))
+
 ```
 
+
+
 ## Calendar heatmap
-```{r heatmap}
+
+Note: After updating to lastest version of RStudio, calendarHeat() function no longer works. The plot included in the report was generated prior to RStudio update. The code for the calendarHeat() function can be found here: https://github.com/jbryer/makeR/blob/master/R/calendarHeat.R
+
+```{r heatmap, eval = FALSE}
 
 # tally the total number of crimes on each day
 dat.15.total <- dat.15 %>% group_by(date) %>% tally()
@@ -434,7 +443,7 @@ plotTukeyHSD <- plotTukeysHSD <- function(tukey.out,
   mtext(text = y.axis.label,side = 2,line = 1.95)
   # Error bars = 95% CI
   # mtext(text = "Effect Size of Time of Day on Total Crime",side = 3,line = 1)
-  mtext(text = "Effect Size of Day of Week on Total Crime",side = 3,line = 1)
+  # mtext(text = "Effect Size of Day of Week on Total Crime",side = 3,line = 1)
   
 }      
 
@@ -445,21 +454,24 @@ plotTukeyHSD(TH.day)
 ```
 
 
-## create tables
+## Create tables summarizing crime types and results of statistical testing
 ```{r}
-library(xtable)
+
 options(xtable.floating = FALSE)
 
+# crime categories for each year
 c.types.15 <- table(dat.15$Crime)
-
-x.c.types.15 <- xtable(c.types.15)
-print(xtable(c.types.15, caption = "Crime Types and Frequency"), caption.placement = "top")
+print(xtable(c.types.15))
 
 c.types.16 <- table(dat.16$Crime)
 print(xtable(c.types.16))
 
 c.types.17 <- table(dat.17$Crime)
 print(xtable(c.types.17))
+
+# results of Tukey test for effect of time of day and day of week on total crime
+print(xtable(TH.tod$tod))
+print(xtable(TH.day$day))
 
 ```
 
